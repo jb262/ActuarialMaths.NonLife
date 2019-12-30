@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ActuarialMaths.NonLife.ClaimsReserving.Exceptions;
 
 namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 {
     /// <summary>
     /// Abstract base class for run-off triangles, implements ISliceable for decimal types and ICloneable
     /// </summary>
-    public abstract class Triangle : ISliceable<decimal>, ICloneable
+    public abstract class Triangle : ITriangle, ICloneable
     {
         /// <summary>
         /// Initial capacity of the jagged two dimensional array the triangle's values are to be stored in.

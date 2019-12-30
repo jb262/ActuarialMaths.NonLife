@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ActuarialMaths.NonLife.ClaimsReserving.Exceptions;
 
 namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 {
     /// <summary>
     /// "Run-off square" for the claims projection of a run-off triangle according to a reserving method.
     /// </summary>
-    public class Square : ISliceable<decimal>, ICloneable
+    public class Square : ISquare, ICloneable
     {
         /// <summary>
         /// Square array containing the existing and projected claims.
@@ -272,29 +271,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                 row--;
                 column++;
             }
-        }
-
-        /// <summary>
-        /// Calculates the cashflows for a given period according to the chosen model.
-        /// </summary>
-        /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        public IEnumerable<decimal> CalculateCashflows()
-        {
-            for (int i = 0; i < Periods - 1; i++)
-            {
-                int diagonal = Periods + i;
-
-                yield return GetDiagonal(diagonal).Take(Periods - 1 - i).Zip(GetDiagonal(diagonal - 1), (x, y) => x - y).Sum();
-            }
-        }
-
-        /// <summary>
-        /// Calculates the reserves for each period according to the chosen model.
-        /// </summary>
-        /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        public IEnumerable<decimal> CalculateReserves()
-        {
-            return GetColumn(Periods - 1).Zip(GetDiagonal().Reverse(), (x, y) => x - y);
         }
 
         /// <summary>

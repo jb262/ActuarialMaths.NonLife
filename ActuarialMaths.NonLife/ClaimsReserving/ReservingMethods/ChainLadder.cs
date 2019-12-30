@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
-namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
+namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 {
     /// <summary>
     /// The widely used chain-ladder method for claims reserving.
@@ -61,14 +61,18 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// Develops the model's cumulative triangle into a "run-off square" with the calculated chain-ladder factors.
         /// </summary>
         /// <returns>The projected "run-off square" according to the chain-ladder method.</returns>
-        protected override Square CalculateProjection()
+        protected override ISquare CalculateProjection()
         {
-            Square calc = new Square(Triangle.Periods);
+            ISquare calc = new Square(Triangle.Periods);
             calc.SetColumn(Triangle.GetColumn(0), 0);
 
             for (int i = 0; i < calc.Periods - 1; i++)
             {
-                IEnumerable<decimal> calculatedValues = calc.GetColumn(i).Skip(calc.Periods - 1 - i).Select(x => x * Factors()[i]);
+                IEnumerable<decimal> calculatedValues = 
+                    calc.GetColumn(i)
+                    .Skip(calc.Periods - 1 - i)
+                    .Select(x => x * Factors()[i]);
+
                 calc.SetColumn(Triangle.GetColumn(i + 1).Union(calculatedValues), i + 1);
             }
 

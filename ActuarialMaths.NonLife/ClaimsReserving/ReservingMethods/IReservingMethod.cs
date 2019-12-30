@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
-namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
+namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 {
     /// <summary>
     /// Interface to model a method for actuarial claims reserving.
@@ -11,13 +11,13 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// <summary>
         /// Run-off triangle the method uses to project claims.
         /// </summary>
-        Triangle Triangle { get; }
+        ITriangle Triangle { get; }
 
         /// <summary>
         /// Provides the method's claims projection as a "run-off square".
         /// </summary>
         /// <returns>"Run-off square" containg the projected claims.</returns>
-        Square Projection();
+        ISquare Projection();
 
         /// <summary>
         /// Calculates the total reserve according to the chosen model.
@@ -36,12 +36,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// Provides the calculated reserves for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        IEnumerable<decimal> Reserves();
+        IReadOnlyCollection<decimal> Reserves();
 
         /// <summary>
         /// Provides the calculated cashflows for a given period according to the chosen model.
         /// </summary>
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        IReadOnlyList<decimal> Cashflows();
+        IReadOnlyCollection<decimal> Cashflows();
     }
 }

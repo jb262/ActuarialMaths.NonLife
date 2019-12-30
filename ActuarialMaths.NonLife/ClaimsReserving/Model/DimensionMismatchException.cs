@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ActuarialMaths.NonLife.ClaimsReserving.Exceptions
+namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 {
     /// <summary>
     /// Exception thrown when the element count of a source IEnumerable does not match the element count

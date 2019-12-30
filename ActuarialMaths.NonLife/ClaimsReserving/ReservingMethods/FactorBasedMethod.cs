@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
-namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
+namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 {
     /// <summary>
     /// Abstract base class for factor based claims reserving methods.
@@ -13,7 +13,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// <summary>
         /// Run-off triangle the method uses to project claims.
         /// </summary>
-        public Triangle Triangle { get; }
+        public ITriangle Triangle { get; }
 
         /// <summary>
         /// Factors the run-off triangle is to be developed with.
@@ -33,7 +33,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// <summary>
         /// The "run-off square" containing the projected claims for each accident and settlement period.
         /// </summary>
-        private Square projection;
+        private ISquare projection;
 
         /// <summary>
         /// Constructor given a run-off triangle.
@@ -57,7 +57,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// Provides the method's claims projection as a "run-off square".
         /// </summary>
         /// <returns>"Run-off square" containg the projected claims.</returns>
-        public Square Projection()
+        public ISquare Projection()
         {
             if (projection == null)
             {
@@ -71,7 +71,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// Develops the model's cumulative triangle into a "run-off square" with the method's underlying factors.
         /// </summary>
         /// <returns>The projected "run-off square" according to the chosen method.</returns>
-        protected abstract Square CalculateProjection();
+        protected abstract ISquare CalculateProjection();
 
         /// <summary>
         /// Calculates the total reserve according to the chosen model.
@@ -86,14 +86,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         /// Provides the calculated reserves for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        public IEnumerable<decimal> Reserves()
+        public IReadOnlyCollection<decimal> Reserves()
         {
             if (reserves == null)
             {
                 reserves = Projection().CalculateReserves().ToArray();
             }
 
-            return reserves;
+            return Array.AsReadOnly(reserves);
         }
 
         /// <summary>
@@ -112,17 +112,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Methods
         }
 
         /// <summary>
-        /// Provides the calculated cashflows for a given period according to the chosen model.
+        /// Provides the calculated cashflows for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        public IReadOnlyList<decimal> Cashflows()
+        public IReadOnlyCollection<decimal> Cashflows()
         {
             if (cashflows == null)
             {
                 cashflows = Projection().CalculateCashflows().ToArray();
             }
 
-            return cashflows;
+            return Array.AsReadOnly(cashflows);
         }
     }
 }
