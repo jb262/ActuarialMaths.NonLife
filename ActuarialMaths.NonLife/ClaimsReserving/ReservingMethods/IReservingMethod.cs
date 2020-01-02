@@ -36,12 +36,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Provides the calculated reserves for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        IReadOnlyCollection<decimal> Reserves();
+        IReadOnlyList<decimal> Reserves();
 
         /// <summary>
         /// Provides the calculated cashflows for a given period according to the chosen model.
         /// </summary>
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        IReadOnlyCollection<decimal> Cashflows();
+        IReadOnlyList<decimal> Cashflows();
     }
 }

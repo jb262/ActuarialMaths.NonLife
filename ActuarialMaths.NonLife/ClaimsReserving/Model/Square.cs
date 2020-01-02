@@ -274,6 +274,29 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         }
 
         /// <summary>
+        /// Initializes the values of the square from a triangle.
+        /// </summary>
+        /// <param name="triangle">Triangle the square is to be initialized from.</param>
+        public void InitFromTriangle(ITriangle triangle)
+        {
+            if (triangle.Periods != Periods)
+            {
+                throw new DimensionMismatchException(Periods, triangle.Periods);
+            }
+
+            for (int i = 0; i < triangle.Periods; i++)
+            {
+                int col = 0;
+
+                foreach (decimal val in triangle.GetRow(i))
+                {
+                    claims[i, col] = val;
+                    col++;
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates a deep copy of the sqaure.
         /// </summary>
         /// <returns>Deep copy of the square.</returns>

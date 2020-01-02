@@ -11,5 +11,11 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// Number of periods under observation.
         /// </summary>
         int Periods { get; }
+
+        /// <summary>
+        /// Initializes the values of the square from a triangle.
+        /// </summary>
+        /// <param name="triangle">Triangle the square is to be initialized from.</param>
+        void InitFromTriangle(ITriangle triangle);
     }
 }

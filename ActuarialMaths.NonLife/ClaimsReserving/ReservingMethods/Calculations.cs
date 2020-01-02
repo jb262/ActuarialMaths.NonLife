@@ -7,15 +7,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
     /// <summary>
     /// Extension methods to perform calculations on the modelled run-off objects.
     /// The methods were moved from the objects themselves as they only make sense in connection with an already applied reserving method.
+    /// The extension methods are only meant to be called inside the library as public access could lead to nonsensical results.
     /// </summary>
-    public static class Calculations
+    internal static class Calculations
     {
         // <summary>
         /// Calculates the cashflows for each period according to the chosen model.
         /// </summary>
         /// <param name="square">Square whose cashflows are to be calculated.
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        public static IEnumerable<decimal> CalculateCashflows(this ISquare square)
+        internal static IEnumerable<decimal> CalculateCashflows(this ISquare square)
         {
             for (int i = 0; i < square.Periods - 1; i++)
             {
@@ -31,8 +32,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Calculates the reserves for each period according to the chosen model.
         /// </summary>
+        /// <param name="square">Square whose reserves are to be calculated.</param>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        public static IEnumerable<decimal> CalculateReserves(this ISquare square)
+        internal static IEnumerable<decimal> CalculateReserves(this ISquare square)
         {
             return square.GetColumn(square.Periods - 1)
                 .Zip(square.GetDiagonal().Reverse(), (x, y) => x - y);

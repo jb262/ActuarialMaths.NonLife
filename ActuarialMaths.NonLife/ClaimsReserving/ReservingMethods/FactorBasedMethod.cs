@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
 namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
@@ -86,7 +87,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Provides the calculated reserves for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        public IReadOnlyCollection<decimal> Reserves()
+        public IReadOnlyList<decimal> Reserves()
         {
             if (reserves == null)
             {
@@ -115,7 +116,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Provides the calculated cashflows for each period according to the chosen model.
         /// </summary>
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        public IReadOnlyCollection<decimal> Cashflows()
+        public IReadOnlyList<decimal> Cashflows()
         {
             if (cashflows == null)
             {
@@ -123,6 +124,35 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             }
 
             return Array.AsReadOnly(cashflows);
+        }
+
+        /// <summary>
+        /// Creates a string representation of the current claims reserving model.
+        /// </summary>
+        /// <returns>String representation of the current claims reserving model.</returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("\n--------------------\n");
+            sb.Append(Projection().ToString());
+            sb.Append("\n--------------------\n");
+            sb.Append("Factors:\t");
+
+            for (int i = 0; i < Factors().Count; i++)
+            {
+                sb.Append(Factors()[i].ToString("0.00"));
+
+                if (i < Factors().Count - 1)
+                {
+                    sb.Append("\t");
+                }
+            }
+
+            sb.Append("\nTotal reserve:\t");
+            sb.Append(TotalReserve().ToString("0.00"));
+
+            return sb.ToString();
         }
     }
 }

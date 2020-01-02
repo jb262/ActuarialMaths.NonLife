@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
@@ -80,33 +79,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Creates a string representation of the curent chain-ladder model.
+        /// Creates a string representation of the current chain-ladder model.
         /// </summary>
         /// <returns>String representation of the current chain-ladder model.</returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Claims reserving - Chain-ladder method");
-            sb.Append("\n--------------------\n");
-            sb.Append(Projection().ToString());
-            sb.Append("\n--------------------\n");
-            sb.Append("Factors: ");
-
-            for (int i = 0; i < Factors().Count; i++)
-            {
-                sb.Append(Factors()[i].ToString("0.00"));
-
-                if (i < Factors().Count - 1)
-                {
-                    sb.Append("\t");
-                }
-            }
-
-            sb.Append("\nTotal reserve: ");
-            sb.Append(TotalReserve().ToString("0.00"));
-
-            return sb.ToString();
+            return "Claims reserving - Chain-ladder method" + base.ToString();
         }
     }
 }

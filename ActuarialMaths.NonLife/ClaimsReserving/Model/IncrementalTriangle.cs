@@ -46,7 +46,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <param name="values">Claims to be appended to the triangle.</param>
         /// <remarks>
         /// It is assumed that the claims to be added are amounts paid in the corresponding period,
-        /// i.e. the claims are added to the claims of the previous period before being appended to the triangle.
+        /// i.e. the claims are appended to the triangle as they are passed to the method.
         /// It is assumed that claims to be added are all claims paid in a fixed year. They are ordered
         /// by the relative settlement period in ascending order, e.g.: There are three claims to be added for the year 2019. They are ordered as follows:
         /// 1. Claim occured in 2019 and was paid in 2019 (relative settlement year = 0)
