@@ -29,12 +29,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>Read-only list of the calculated chain-ladder factors.</returns>
         public override IReadOnlyList<decimal> Factors()
         {
-            if (factors == null)
+            if (_factors == null)
             {
-                factors = CalculateFactors();
+                _factors = CalculateFactors();
             }
 
-            return Array.AsReadOnly(factors);
+            return Array.AsReadOnly(_factors);
         }
 
         /// <summary>

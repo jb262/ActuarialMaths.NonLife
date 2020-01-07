@@ -13,7 +13,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <summary>
         /// Square array containing the existing and projected claims.
         /// </summary>
-        private decimal[,] claims;
+        private decimal[,] _claims;
 
         /// <summary>
         /// Number of periods under observation.
@@ -27,7 +27,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         public Square(int periods)
         {
             Periods = periods;
-            claims = new decimal[periods, periods];
+            _claims = new decimal[periods, periods];
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                     throw new ObservationPeriodExceedenceException();
                 }
 
-                return claims[row, column];
+                return _claims[row, column];
             }
 
             set
@@ -67,7 +67,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                     throw new ObservationPeriodExceedenceException();
                 }
 
-                claims[row, column] = value;
+                _claims[row, column] = value;
             }
         }
 
@@ -92,7 +92,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             for (int i = 0; i < Periods; i++)
             {
-                yield return claims[row, i];
+                yield return _claims[row, i];
             }
         }
 
@@ -117,7 +117,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             for (int i = 0; i < Periods; i++)
             {
-                yield return claims[i, column];
+                yield return _claims[i, column];
             }
         }
 
@@ -157,7 +157,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             {
                 for (int i = 0; i < diagonal + 1; i++)
                 {
-                    yield return claims[diagonal - i, i];
+                    yield return _claims[diagonal - i, i];
                 }
             }
             else
@@ -165,7 +165,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                 int j = diagonal - Periods + 1;
                 for (int i = 0; i < 2 * Periods - diagonal - 1; i++)
                 {
-                    yield return claims[Periods - 1 - i, j];
+                    yield return _claims[Periods - 1 - i, j];
                     j++;
                 }
             }
@@ -192,7 +192,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row, column] = val;
+                _claims[row, column] = val;
                 column++;
             }
         }
@@ -218,7 +218,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row, column] = val;
+                _claims[row, column] = val;
                 row++;
             }
         }
@@ -267,7 +267,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row, column] = val;
+                _claims[row, column] = val;
                 row--;
                 column++;
             }
@@ -290,7 +290,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
                 foreach (decimal val in triangle.GetRow(i))
                 {
-                    claims[i, col] = val;
+                    _claims[i, col] = val;
                     col++;
                 }
             }
@@ -307,7 +307,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             {
                 for (int j = 0; j < Periods; j++)
                 {
-                    cloned.claims[i, j] = claims[i, j];
+                    cloned._claims[i, j] = _claims[i, j];
                 }
             }
 
@@ -326,7 +326,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             {
                 for (int j = 0; j < Periods; j++)
                 {
-                    sb.Append(claims[i, j].ToString("0.00"));
+                    sb.Append(_claims[i, j].ToString("0.00"));
 
                     if (j < Periods - 1)
                     {

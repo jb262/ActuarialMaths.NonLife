@@ -64,11 +64,11 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             {
                 if (column == 0)
                 {
-                    claims[row][column] = val;
+                    _claims[row][column] = val;
                 }
                 else
                 {
-                    claims[row][column] = claims[row][column - 1] + val;
+                    _claims[row][column] = _claims[row][column - 1] + val;
                 }
 
                 row--;

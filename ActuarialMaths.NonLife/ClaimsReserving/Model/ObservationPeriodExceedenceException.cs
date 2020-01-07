@@ -10,12 +10,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <summary>
         /// Default message shown when no other exception message is given.
         /// </summary>
-        private const string defaultMessage = "The period tried to be accessed exceeds the observation period.";
+        private const string _defaultMessage = "The period tried to be accessed exceeds the observation period.";
 
         /// <summary>
         /// Basic constructor with the default message.
         /// </summary>
-        public ObservationPeriodExceedenceException() : base(defaultMessage) { }
+        public ObservationPeriodExceedenceException() : base(_defaultMessage) { }
 
         /// <summary>
         /// Constructor with a given exception message.

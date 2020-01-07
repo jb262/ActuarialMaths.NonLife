@@ -19,22 +19,22 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Factors the run-off triangle is to be developed with.
         /// </summary>
-        protected decimal[] factors;
+        protected decimal[] _factors;
 
         /// <summary>
         /// The reserves per period accoring to the model.
         /// </summary>
-        private decimal[] reserves;
+        private decimal[] _reserves;
 
         /// <summary>
         /// The expected cashflows for each period according to the model.
         /// </summary>
-        private decimal[] cashflows;
+        private decimal[] _cashflows;
 
         /// <summary>
         /// The "run-off square" containing the projected claims for each accident and settlement period.
         /// </summary>
-        private ISquare projection;
+        private ISquare _projection;
 
         /// <summary>
         /// Constructor given a run-off triangle.
@@ -51,7 +51,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>Read-only list of the method's underlying factors.</returns>
         public virtual IReadOnlyList<decimal> Factors()
         {
-            return Array.AsReadOnly(factors);
+            return Array.AsReadOnly(_factors);
         }
 
         /// <summary>
@@ -60,12 +60,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>"Run-off square" containg the projected claims.</returns>
         public ISquare Projection()
         {
-            if (projection == null)
+            if (_projection == null)
             {
-                projection = CalculateProjection();
+                _projection = CalculateProjection();
             }
 
-            return projection;
+            return _projection;
         }
 
         /// <summary>
@@ -89,12 +89,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
         public IReadOnlyList<decimal> Reserves()
         {
-            if (reserves == null)
+            if (_reserves == null)
             {
-                reserves = Projection().CalculateReserves().ToArray();
+                _reserves = Projection().CalculateReserves().ToArray();
             }
 
-            return Array.AsReadOnly(reserves);
+            return Array.AsReadOnly(_reserves);
         }
 
         /// <summary>
@@ -104,12 +104,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The calculated reserves for the given period according to the chosen model.</returns>
         public decimal Reserve(int period)
         {
-            if (reserves == null)
-            {
-                reserves = Projection().CalculateReserves().ToArray();
-            }
-
-            return reserves[period];
+            return Reserves()[period];
         }
 
         /// <summary>
@@ -118,12 +113,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
         public IReadOnlyList<decimal> Cashflows()
         {
-            if (cashflows == null)
+            if (_cashflows == null)
             {
-                cashflows = Projection().CalculateCashflows().ToArray();
+                _cashflows = Projection().CalculateCashflows().ToArray();
             }
 
-            return Array.AsReadOnly(cashflows);
+            return Array.AsReadOnly(_cashflows);
         }
 
         /// <summary>

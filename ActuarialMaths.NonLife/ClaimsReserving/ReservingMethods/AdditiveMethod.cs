@@ -14,7 +14,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Premiums earned for each period ordered by accident year in ascending order.
         /// </summary>
-        private readonly IEnumerable<decimal> premiums;
+        private readonly IEnumerable<decimal> _premiums;
 
         /// <summary>
         /// Constructor of an additive claims reserving model given an incremental run-off triangle.
@@ -29,7 +29,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             {
                 throw new DimensionMismatchException(Triangle.Periods, n);
             }
-            this.premiums = premiums;
+
+            _premiums = premiums;
         }
 
         /// <summary>
@@ -45,12 +46,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>Read-only list of the method's underlying factors.</returns>
         public override IReadOnlyList<decimal> Factors()
         {
-            if (factors == null)
+            if (_factors == null)
             {
-                factors = CalculateFactors();
+                _factors = CalculateFactors();
             }
 
-            return Array.AsReadOnly(factors);
+            return Array.AsReadOnly(_factors);
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 
             for (int i = 0; i < Triangle.Periods; i++)
             {
-                calc[i] = Triangle.GetColumn(i).Sum() / premiums.Take(Triangle.Periods - i).Sum();
+                calc[i] = Triangle.GetColumn(i).Sum() / _premiums.Take(Triangle.Periods - i).Sum();
             }
 
             return calc;
@@ -82,7 +83,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 
             for (int i = 0; i < calc.Periods - 1; i++)
             {
-                IEnumerable<decimal> calculatedValues = premiums
+                IEnumerable<decimal> calculatedValues = _premiums
                     .Skip(calc.Periods - i - 1)
                     .Select(x => Factors()[i + 1] * x)
                     .Zip(calc.GetColumn(i).Skip(calc.Periods - i - 1), (x, y) => x + y);
@@ -104,10 +105,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             sb.Append("Claims reserving - Additive method");
             sb.Append("\n--------------------\n");
             sb.Append("Premiums:\t");
-            int n = premiums.Count();
+            int n = _premiums.Count();
             int ctr = 0;
 
-            foreach (decimal premium in premiums)
+            foreach (decimal premium in _premiums)
             {
                 sb.Append(premium.ToString("0.00"));
 

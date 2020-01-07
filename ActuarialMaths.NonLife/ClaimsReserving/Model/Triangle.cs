@@ -13,17 +13,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <summary>
         /// Initial capacity of the jagged two dimensional array the triangle's values are to be stored in.
         /// </summary>
-        private const int initialCapacity = 8;
+        private const int _initialCapacity = 8;
 
         /// <summary>
         /// Jagged two dimensional array containing the existing claims of the model.
         /// </summary>
-        protected decimal[][] claims;
+        protected decimal[][] _claims;
 
         /// <summary>
         /// The capacity of the jagged tow dimensional array containing the existing claims of the model.
         /// </summary>
-        private int capacity;
+        private int _capacity;
 
         /// <summary>
         /// Number of periods under observation.
@@ -44,18 +44,18 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// </remarks>
         protected Triangle(int periods)
         {
-            capacity = initialCapacity;
+            _capacity = _initialCapacity;
 
-            while (capacity < periods)
+            while (_capacity < periods)
             {
-                capacity *= 2;
+                _capacity *= 2;
             }
 
-            claims = new decimal[capacity][];
+            _claims = new decimal[_capacity][];
 
-            for (int i = 0; i < capacity; i++)
+            for (int i = 0; i < _capacity; i++)
             {
-                claims[i] = new decimal[capacity - i];
+                _claims[i] = new decimal[_capacity - i];
             }
 
             Periods = periods;
@@ -83,7 +83,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                     throw new ObservationPeriodExceedenceException();
                 }
 
-                return claims[row][column];
+                return _claims[row][column];
             }
 
             set
@@ -98,7 +98,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                     throw new ObservationPeriodExceedenceException();
                 }
 
-                claims[row][column] = value;
+                _claims[row][column] = value;
             }
         }
 
@@ -123,7 +123,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             for (int i = 0; i < Periods - row; i++)
             {
-                yield return claims[row][i];
+                yield return _claims[row][i];
             }
         }
 
@@ -148,7 +148,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             for (int i = 0; i < Periods - column; i++)
             {
-                yield return claims[i][column];
+                yield return _claims[i][column];
             }
         }
 
@@ -187,7 +187,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             for (int i = 0; i < diagonal + 1; i++)
             {
-                yield return claims[diagonal - i][i];
+                yield return _claims[diagonal - i][i];
             }
         }
 
@@ -222,7 +222,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row][column] = val;
+                _claims[row][column] = val;
                 column++;
             }
         }
@@ -258,7 +258,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row][column] = val;
+                _claims[row][column] = val;
                 row++;
             }
         }
@@ -304,7 +304,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal val in values)
             {
-                claims[row][column] = val;
+                _claims[row][column] = val;
                 row--;
                 column++;
             }
@@ -316,12 +316,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <returns>Deep copy of the triangle.</returns>
         public object Clone()
         {
-            Triangle cloned = (Triangle)Activator.CreateInstance(this.GetType(), Periods);
+            Triangle cloned = (Triangle)Activator.CreateInstance(GetType(), Periods);
             for (int i = 0; i < Periods; i++)
             {
                 for (int j = 0; j < Periods - i; j++)
                 {
-                    cloned.claims[i][j] = claims[i][j];
+                    cloned._claims[i][j] = _claims[i][j];
                 }
             }
             return cloned;
@@ -347,15 +347,15 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                 throw new DimensionMismatchException(Periods, n);
             }
 
-            if (capacity < n)
+            if (_capacity < n)
             {
-                capacity *= 2;
+                _capacity *= 2;
 
-                Array.Resize(ref claims, capacity);
+                Array.Resize(ref _claims, _capacity);
 
-                for (int i = 0; i < capacity; i++)
+                for (int i = 0; i < _capacity; i++)
                 {
-                    Array.Resize(ref claims[i], capacity - i);
+                    Array.Resize(ref _claims[i], _capacity - i);
                 }
             }
         }
@@ -372,7 +372,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             {
                 for (int j = 0; j < Periods - i; j++)
                 {
-                    sb.Append(claims[i][j].ToString("0.00"));
+                    sb.Append(_claims[i][j].ToString("0.00"));
                     if (j < Periods - i - 1)
                     {
                         sb.Append("\t");

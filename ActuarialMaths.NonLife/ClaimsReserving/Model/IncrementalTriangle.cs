@@ -62,7 +62,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             foreach (decimal value in values)
             {
-                claims[row][column] = value;
+                _claims[row][column] = value;
                 row--;
                 column++;
             }

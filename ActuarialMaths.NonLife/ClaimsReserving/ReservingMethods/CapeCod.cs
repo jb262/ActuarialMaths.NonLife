@@ -13,14 +13,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Volume measures needed for the claims development according to the Cape Cod method.
         /// </summary>
-        private readonly IEnumerable<decimal> volumeMeasures;
+        private readonly IEnumerable<decimal> _volumeMeasures;
 
         /// <summary>
         /// Constructor of a Cape Cod model given an incremental run-off triangle.
         /// </summary>
         /// <param name="triangle">Incremental triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
-        /// <param name="volumeMeasures">Volume measures needed for the claims development according to the model.</param>
+        /// <param name="volumeMeasures">Ex ante volume measures needed for the claims development.</param>
         public CapeCod(IncrementalTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : this(triangle.ToCumulativeTriangle(), factors, volumeMeasures) { }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(triangle.Periods, vmCount);
             }
 
-            this.factors = factors.ToArray();
-            this.volumeMeasures = volumeMeasures;
+            _factors = factors.ToArray();
+            _volumeMeasures = volumeMeasures;
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The projected "run-off square" according to the Cape Cod method.</returns>
         protected override ISquare CalculateProjection()
         {
-            decimal kappa = Triangle.GetDiagonal().Sum() / volumeMeasures.Reverse().Zip(factors, (x, y) => x * y).Sum();
-            IEnumerable<decimal> newVolumeMeasures = volumeMeasures.Select(x => x * kappa).Reverse();
+            decimal kappa = Triangle.GetDiagonal().Sum() / _volumeMeasures.Reverse().Zip(_factors, (x, y) => x * y).Sum();
+            IEnumerable<decimal> newVolumeMeasures = _volumeMeasures.Select(x => x * kappa).Reverse();
             IEnumerable<decimal> deltaFactors =
                 Factors()
                 .Skip(1)
@@ -90,10 +90,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             sb.Append("Claims reserving - Cape Cod method");
             sb.Append("\n--------------------\n");
             sb.Append("Volume measures:\t");
-            int n = volumeMeasures.Count();
+            int n = _volumeMeasures.Count();
             int ctr = 0;
 
-            foreach (decimal val in volumeMeasures)
+            foreach (decimal val in _volumeMeasures)
             {
                 sb.Append(val.ToString("0.00"));
 

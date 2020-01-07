@@ -30,7 +30,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, n);
             }
 
-            this.factors = factors.ToArray();
+            _factors = factors.ToArray();
         }
 
         /// <summary>

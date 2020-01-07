@@ -11,16 +11,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <summary>
         /// Default message shown when no other exception message is given.
         /// </summary>
-        private const string defaultMessage = "The number of elements does not match the target's dimension.";
+        private const string _defaultMessage = "The number of elements does not match the target's dimension.";
         /// <summary>
         /// Message part shown when the expected element count is to be shown alongside the given element count.
         /// </summary>
-        private const string defaultExpectedDim = "Expected: {0}, given: {1}.";
+        private const string _defaultExpectedDim = "Expected: {0}, given: {1}.";
 
         /// <summary>
         /// Basic constructor with the default message.
         /// </summary>
-        public DimensionMismatchException() : base(defaultMessage) { }
+        public DimensionMismatchException() : base(_defaultMessage) { }
 
         /// <summary>
         /// Constructor with a given exception message.
@@ -40,6 +40,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// </summary>
         /// <param name="expected">Excpected element count.</param>
         /// <param name="given">Given element count.</param>
-        public DimensionMismatchException(int expected, int given) : base(string.Format(string.Concat(defaultMessage, " ", defaultExpectedDim), expected, given)) { }
+        public DimensionMismatchException(int expected, int given) : base(string.Format(string.Concat(_defaultMessage, " ", _defaultExpectedDim), expected, given)) { }
     }
 }
