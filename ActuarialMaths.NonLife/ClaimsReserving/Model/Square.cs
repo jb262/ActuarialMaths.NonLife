@@ -188,6 +188,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                 throw new DimensionMismatchException(Periods, n);
             }
 
+            if (row < 0)
+            {
+                throw new NegativePeriodException();
+            }
+
+            if (row > Periods - 1)
+            {
+                throw new ObservationPeriodExceedenceException();
+            }
+
             int column = 0;
 
             foreach (decimal val in values)
@@ -212,6 +222,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             if (n != Periods)
             {
                 throw new DimensionMismatchException(Periods, n);
+            }
+
+            if (column < 0)
+            {
+                throw new NegativePeriodException();
+            }
+
+            if (column > Periods - 1)
+            {
+                throw new ObservationPeriodExceedenceException();
             }
 
             int row = 0;
@@ -246,6 +266,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             int expectedLen;
             int row;
             int column;
+
+            if (diagonal < 0)
+            {
+                throw new NegativePeriodException();
+            }
+
+            if (diagonal > 2 * (Periods - 1))
+            {
+                throw new ObservationPeriodExceedenceException();
+            }
 
             if (diagonal < Periods)
             {

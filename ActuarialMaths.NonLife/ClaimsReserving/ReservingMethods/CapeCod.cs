@@ -29,6 +29,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Cumulative triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <param name="volumeMeasures">Volume measures needed for the claims development according to the model.</param>
+        /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
+        /// <exception cref="DimensionMismatchException">Thrown when the number of volume measures does not match the number of periods observed.</exception>
         public CapeCod(CumulativeTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(triangle)
         {
             int factorsCount = factors.Count();
@@ -45,7 +47,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(triangle.Periods, vmCount);
             }
 
-            _factors = factors.ToArray();
+            _factors = factors.ToList().AsReadOnly();
             _volumeMeasures = volumeMeasures;
         }
 

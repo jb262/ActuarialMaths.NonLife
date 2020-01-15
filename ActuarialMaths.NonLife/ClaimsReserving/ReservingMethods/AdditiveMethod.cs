@@ -21,6 +21,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         /// <param name="triangle">Incremental triangle to be developed.</param>
         /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
+        /// <exception cref="DimensionMismatchException">Thrown when the count of premia does not match the number of periods observed.</exception>
         public AdditiveMethod(IncrementalTriangle triangle, IEnumerable<decimal> premiums) : base(triangle)
         {
             int n = premiums.Count();
@@ -51,14 +52,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 _factors = CalculateFactors();
             }
 
-            return Array.AsReadOnly(_factors);
+            return _factors;
         }
 
         /// <summary>
         /// Calculates the model's development factors.
         /// </summary>
-        /// <returns>An array containing the factors of the additive method.</returns>
-        private decimal[] CalculateFactors()
+        /// <returns>A read only list containing the factors of the additive method.</returns>
+        private IReadOnlyList<decimal> CalculateFactors()
         {
             decimal[] calc = new decimal[Triangle.Periods];
 
@@ -67,7 +68,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 calc[i] = Triangle.GetColumn(i).Sum() / _premiums.Take(Triangle.Periods - i).Sum();
             }
 
-            return calc;
+            return Array.AsReadOnly(calc);
         }
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Select(x => Factors()[i + 1] * x)
                     .Zip(calc.GetColumn(i).Skip(calc.Periods - i - 1), (x, y) => x + y);
 
-                calc.SetColumn(cumul.GetColumn(i + 1).Union(calculatedValues), i + 1);
+                calc.SetColumn(cumul.GetColumn(i + 1).Concat(calculatedValues), i + 1);
             }
 
             return calc;

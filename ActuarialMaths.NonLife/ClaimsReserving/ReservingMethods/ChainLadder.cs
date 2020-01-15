@@ -34,14 +34,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 _factors = CalculateFactors();
             }
 
-            return Array.AsReadOnly(_factors);
+            return _factors;
         }
 
         /// <summary>
         /// Calculates the model's chain-ladder factors.
         /// </summary>
-        /// <returns>An array containing the chain-ladder factors.</returns>
-        private decimal[] CalculateFactors()
+        /// <returns>A read only list containing the chain-ladder factors.</returns>
+        private IReadOnlyList<decimal> CalculateFactors()
         {
             decimal[] calc = new decimal[Triangle.Periods - 1];
 
@@ -53,7 +53,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 calc[i] = numerator / denominator;
             }
 
-            return calc;
+            return Array.AsReadOnly(calc);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Skip(calc.Periods - 1 - i)
                     .Select(x => x * Factors()[i]);
 
-                calc.SetColumn(Triangle.GetColumn(i + 1).Union(calculatedValues), i + 1);
+                calc.SetColumn(Triangle.GetColumn(i + 1).Concat(calculatedValues), i + 1);
             }
 
             return calc;

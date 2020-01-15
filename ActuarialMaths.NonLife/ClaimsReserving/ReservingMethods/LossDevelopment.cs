@@ -21,6 +21,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         /// <param name="triangle">Cumulative triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
+        /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
         public LossDevelopment(CumulativeTriangle triangle, IEnumerable<decimal> factors) : base(triangle)
         {
             int n = factors.Count();
@@ -30,7 +31,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, n);
             }
 
-            _factors = factors.ToArray();
+            _factors = factors.ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Skip(i + 1)
                     .Select(x => x * Factors()[Factors().Count - i - 1]);
 
-                calc.SetColumn(Triangle.GetColumn(calc.Periods - i - 1).Union(calculated), calc.Periods - i - 1);
+                calc.SetColumn(Triangle.GetColumn(calc.Periods - i - 1).Concat(calculated), calc.Periods - i - 1);
             }
 
             return calc;

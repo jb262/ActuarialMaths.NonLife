@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
@@ -19,17 +18,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Factors the run-off triangle is to be developed with.
         /// </summary>
-        protected decimal[] _factors;
+        protected IReadOnlyList<decimal> _factors;
 
         /// <summary>
         /// The reserves per period accoring to the model.
         /// </summary>
-        private decimal[] _reserves;
+        private IReadOnlyList<decimal> _reserves;
 
         /// <summary>
         /// The expected cashflows for each period according to the model.
         /// </summary>
-        private decimal[] _cashflows;
+        private IReadOnlyList<decimal> _cashflows;
 
         /// <summary>
         /// The "run-off square" containing the projected claims for each accident and settlement period.
@@ -51,7 +50,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>Read-only list of the method's underlying factors.</returns>
         public virtual IReadOnlyList<decimal> Factors()
         {
-            return Array.AsReadOnly(_factors);
+            return _factors;
         }
 
         /// <summary>
@@ -91,10 +90,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         {
             if (_reserves == null)
             {
-                _reserves = Projection().CalculateReserves().ToArray();
+                _reserves = Projection().CalculateReserves().ToList().AsReadOnly();
             }
 
-            return Array.AsReadOnly(_reserves);
+            return _reserves;
         }
 
         /// <summary>
@@ -115,10 +114,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         {
             if (_cashflows == null)
             {
-                _cashflows = Projection().CalculateCashflows().ToArray();
+                _cashflows = Projection().CalculateCashflows().ToList().AsReadOnly();
             }
 
-            return Array.AsReadOnly(_cashflows);
+            return _cashflows;
         }
 
         /// <summary>

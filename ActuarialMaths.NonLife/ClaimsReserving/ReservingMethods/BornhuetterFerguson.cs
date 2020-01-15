@@ -29,6 +29,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Cumulative triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <param name="alpha">Ex-ante expected final claim levels.</param>
+        /// <exception cref="DimensionMismatchException">Thrown when the count of factors does not match the number of periods observed.</exception>
+        /// <exception cref="DimensionMismatchException">Thrown when the number of expected final claim levels does not match the number of periods observed.</exception>
         public BornhuetterFerguson(CumulativeTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(triangle)
         {
             int factorsCount = factors.Count();
@@ -45,7 +47,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, alphaCount);
             }
 
-            _factors = factors.ToArray();
+            _factors = factors.ToList().AsReadOnly();
             _alpha = alpha.ToArray();
         }
 
