@@ -6,19 +6,31 @@ using System.Text;
 
 namespace ActuarialMaths.NonLife.TariffRating.Model
 {
+    /// <summary>
+    /// Standard implementation of the tariff data.
+    /// </summary>
     public class TariffData : ITariffData
     {
+        /// <summary>
+        /// Mapping of the valid tariff keys to their respective cells.
+        /// </summary>
         private IDictionary<ITariffKey, TariffCell> _cells;
-        private ISet<ITariffAttribute> _attributes;
-        private IReadOnlyCollection<ITariffAttribute> _attributesCollection;
+
+        /// <summary>
+        /// Average expected claims expenditure over each value of each attribute.
+        /// </summary>
         private decimal? _expectedClaimsExpenditure;
 
+        /// <summary>
+        /// Constructor of the tariff data.
+        /// </summary>
+        /// <param name="attributes">Attributes the data is to be modelled with.</param>
         public TariffData(IEnumerable<ITariffAttribute> attributes)
         {
-            _attributes = new HashSet<ITariffAttribute>(attributes);
+            Attributes = new List<ITariffAttribute>(attributes).AsReadOnly();
             _cells = new Dictionary<ITariffKey, TariffCell>(TariffKey.CreateTariffKeyComparer());
 
-            foreach (ITariffKey key in TariffKey.Combinations(_attributes))
+            foreach (ITariffKey key in TariffKey.Combinations(Attributes))
             {
                 _cells.Add(key, new TariffCell(0m, 0));
             }
@@ -67,7 +79,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         {
             get
             {
-                if (!_attributes.Contains(attributeValue.Attribute))
+                if (!Attributes.Contains(attributeValue.Attribute))
                 {
                     throw new InvalidAttributeValueException();
                 }
@@ -85,18 +97,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Attributes that describe the tariff groups.
         /// </summary>
-        public IReadOnlyCollection<ITariffAttribute> Attributes
-        {
-            get
-            {
-                if (_attributesCollection == null)
-                {
-                    _attributesCollection = _attributes.ToList().AsReadOnly();
-                }
-
-                return _attributesCollection;
-            }
-        }
+        public IReadOnlyCollection<ITariffAttribute> Attributes { get; }
 
         /// <summary>
         /// Keys describing a tariff group by a set of valid values of each attribute of the tariff.
