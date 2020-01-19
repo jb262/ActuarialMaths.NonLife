@@ -11,22 +11,13 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
     public class TariffAttribute : ITariffAttribute
     {
         /// <summary>
-        /// Set of all valid attribute values.
-        /// </summary>
-        private ISet<TariffAttributeValue> _values;
-
-        /// <summary>
-        /// Read only collection of all valid attribute values, will be exposed to the public when assigned.
-        /// </summary>
-        private IReadOnlyCollection<TariffAttributeValue> _valuesList;
-
-        /// <summary>
         /// Standard constructor of a TariffAttribute.
         /// </summary>
         /// <param name="label">Description of the attribute.</param>
         public TariffAttribute(string label)
         {
             Label = label;
+            Values = new HashSet<TariffAttributeValue>();
         }
 
         /// <summary>
@@ -34,9 +25,17 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// </summary>
         /// <param name="label">Description of the attribute.</param>
         /// <param name="attributeValues">Valid values for the attribute.</param>
+        /// <exception cref="InvalidAttributeValueException">Thrown when the attribute of one attribute value differs from this attribute.</exception>
         public TariffAttribute(string label, IEnumerable<TariffAttributeValue> attributeValues) : this(label)
         {
-            _values = new HashSet<TariffAttributeValue>(attributeValues);
+            foreach (TariffAttributeValue attributeValue in attributeValues)
+            {
+                if (attributeValue.Attribute != this)
+                {
+                    throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
+                }
+                Values.Add(attributeValue);
+            }
         }
 
         /// <summary>
@@ -46,7 +45,10 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <param name="attributeValues">Valid values for the attribute as plain text.</param>
         public TariffAttribute(string label, IEnumerable<string> attributeValues) : this(label)
         {
-            _values = new HashSet<TariffAttributeValue>(attributeValues.Select(x => new TariffAttributeValue(this, x)));
+            foreach (string attributeValue in attributeValues)
+            {
+                Values.Add(new TariffAttributeValue(this, attributeValue));
+            }
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
             {
                 TariffAttributeValue attributeValue = new TariffAttributeValue(this, val);
 
-                if (!_values.Contains(attributeValue))
+                if (!Values.Contains(attributeValue))
                 {
                     throw new InvalidAttributeValueException();
                 }
@@ -78,17 +80,60 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Possible values of the attribute.
         /// </summary>
-        public IReadOnlyCollection<TariffAttributeValue> Values
-        {
-            get
-            {
-                if (_valuesList == null)
-                {
-                    _valuesList = _values.ToList().AsReadOnly();
-                }
+        public ICollection<TariffAttributeValue> Values { get; }
 
-                return _valuesList;
+        /// <summary>
+        /// Adds a TariffAttributeValue to the attribute.
+        /// </summary>
+        /// <param name="attributeValue">TariffAttributeValue to be added.</param>
+        /// /// <exception cref="InvalidAttributeValueException">Thrown when the attribute of the attribute value differs from this attribute.</exception>
+        public void Add(TariffAttributeValue attributeValue)
+        {
+            if (attributeValue.Attribute != this)
+            {
+                throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
             }
+
+            Values.Add(attributeValue);
+        }
+
+        /// <summary>
+        /// Adds a TariffAttributeValue to the attribute.
+        /// </summary>
+        /// <param name="attributeValue">String representation of the TariffAttributeVale to be added.</param>
+        public void Add(string attributeValue)
+        {
+            Add(new TariffAttributeValue(this, attributeValue));
+        }
+
+        /// <summary>
+        /// Remoces a TaiffAttributeValue from the attribute.
+        /// </summary>
+        /// <param name="attributeValue">TariffAttributeValue to be removed.</param>
+        /// <exception cref="InvalidAttributeValueException">Thrown when the attribute of the attribute value differs from this attribute.</exception>
+        /// <exception cref="InvalidAttributeValueException">Thrown when the Values set does not contain the value to be removed.</exception>
+        public void Remove(TariffAttributeValue attributeValue)
+        {
+            if (attributeValue.Attribute != this)
+            {
+                throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
+            }
+
+            if (!Values.Contains(attributeValue))
+            {
+                throw new InvalidAttributeValueException();
+            }
+
+            Values.Remove(attributeValue);
+        }
+
+        /// <summary>
+        /// Removes a TariffAttributeValue from the attribute.
+        /// </summary>
+        /// <param name="attributeValue">String representation of the TariffAttributeValue to be removed.</param>
+        public void Remove(string attributeValue)
+        {
+            Remove(new TariffAttributeValue(this, attributeValue));
         }
 
         /// <summary>
@@ -97,7 +142,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <returns>Enumerator of the attribute values.</returns>
         public IEnumerator<TariffAttributeValue> GetEnumerator()
         {
-            return _values.GetEnumerator();
+            return Values.GetEnumerator();
         }
 
         /// <summary>
@@ -121,11 +166,11 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
 
             int i = 0;
 
-            foreach (TariffAttributeValue val in _values)
+            foreach (TariffAttributeValue val in Values)
             {
                 sb.Append(val.Value);
 
-                if (++i < _values.Count)
+                if (++i < Values.Count)
                 {
                     sb.Append(", ");
                 }
