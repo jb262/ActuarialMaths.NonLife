@@ -160,7 +160,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Retrieves the average expected claims expenditure over all tariff groups in the model. 
         /// </summary>
-        /// <returns>Average expected claims expenditure over all tariff groups in the model</returns>
+        /// <returns>Average expected claims expenditure over all tariff groups in the model.</returns>
         public decimal ExpectedClaimsExpenditure()
         {
             if (_expectedClaimsExpenditure == null)
@@ -218,7 +218,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                     sb.Append("\n");
                 }
             }
-                return sb.ToString();
+            return sb.ToString();
         }
     }
 }

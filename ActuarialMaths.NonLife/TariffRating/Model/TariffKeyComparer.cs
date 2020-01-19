@@ -8,7 +8,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
     public class TariffKeyComparer : IEqualityComparer<ITariffKey>
     {
         /// <summary>
-        /// EqualityComparer for the key's underlying set
+        /// EqualityComparer for the key's underlying set.
         /// </summary>
         private readonly IEqualityComparer<HashSet<TariffAttributeValue>> _comparer;
 

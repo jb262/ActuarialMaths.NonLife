@@ -32,7 +32,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         bool Contains(TariffAttributeValue tariffAttributeValue);
 
         /// <summary>
-        /// Checks whether the key contains a valid valid of the given attribute.
+        /// Checks whether the key contains a valid value of the given attribute.
         /// </summary>
         /// <param name="tariffAttribute">Attribute to be checked.</param>
         /// <returns>True, if the key contains a valid value of the given attribute, false otherwise.</returns>

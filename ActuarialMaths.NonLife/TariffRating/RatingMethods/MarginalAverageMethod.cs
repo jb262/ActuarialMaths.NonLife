@@ -16,7 +16,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         public MarginalAverageMethod(ITariffData tariffData) : base(tariffData) { }
 
         /// <summary>
-        /// Calculpates the marginal factors according to the marginal average tariff rating method.
+        /// Calculates the marginal factors according to the marginal average tariff rating method.
         /// </summary>
         /// <returns>The mapping of each of the model's tariff attribute values to their marginal factors.</returns>
         protected override IDictionary<TariffAttributeValue, decimal> CalculateFactors()

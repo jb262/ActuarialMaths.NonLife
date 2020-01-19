@@ -8,7 +8,7 @@ using ActuarialMaths.NonLife.TariffRating.Model;
 namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
 {
     /// <summary>
-    /// The family of margibnl factor methods for non-life tariff rating.
+    /// The family of marginal factor methods for non-life tariff rating.
     /// </summary>
     public abstract class MarginalFactorMethod : IRatingMethod
     {
@@ -128,7 +128,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         }
 
         /// <summary>
-        /// Calculpates the marginal factors according to the chosen model.
+        /// Calculates the marginal factors according to the chosen model.
         /// </summary>
         /// <returns>The mapping of each of the model's tariff attribute values to their marginal factors.</returns>
         protected abstract IDictionary<TariffAttributeValue, decimal> CalculateFactors();

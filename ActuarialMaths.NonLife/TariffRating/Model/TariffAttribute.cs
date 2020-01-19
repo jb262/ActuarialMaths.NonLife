@@ -40,7 +40,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         }
 
         /// <summary>
-        /// Constructor of a TariffAttribute providing a collection of valid values.
+        /// Constructor of a TariffAttribute given a collection of valid values.
         /// </summary>
         /// <param name="label">Description of the attribute.</param>
         /// <param name="attributeValues">Valid values for the attribute as plain text.</param>
@@ -54,7 +54,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// </summary>
         /// <param name="val">Description of the attribute value as plain text.</param>
         /// <returns>An instance of the TariffAttributeValue struct representing a valid value for this attribute.</returns>
-        /// <exception cref="InvalidAttributeValueException">Thrown when a values that is not legal for this attribute is tried to be accessed.</exception>
+        /// <exception cref="InvalidAttributeValueException">Thrown when a value that is not legal for this attribute is tried to be accessed.</exception>
         public TariffAttributeValue this[string val]
         {
             get
