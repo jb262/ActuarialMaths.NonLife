@@ -58,11 +58,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         protected override ISquare CalculateProjection()
         {
             decimal kappa = Triangle.GetDiagonal().Sum() / _volumeMeasures.Reverse().Zip(_factors, (x, y) => x * y).Sum();
-            IEnumerable<decimal> newVolumeMeasures = _volumeMeasures.Select(x => x * kappa).Reverse();
+            IEnumerable<decimal> newVolumeMeasures =
+                _volumeMeasures
+                .Select(x => x * kappa)
+                .Reverse()
+                .ToList();
+
             IEnumerable<decimal> deltaFactors =
                 Factors()
                 .Skip(1)
-                .Zip(Factors().Take(Factors().Count - 1), (x, y) => x - y);
+                .Zip(Factors().Take(Factors().Count - 1), (x, y) => x - y)
+                .ToList();
 
             ISquare calc = new Square(Triangle.Periods);
             calc.InitFromTriangle(Triangle);

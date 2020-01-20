@@ -162,9 +162,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
             int i = 0;
 
             foreach (KeyValuePair<ITariffKey, decimal> tariff in this)
-            {
-                int keyLen = tariff.Key.Count();
-                
+            {                
                 sb.Append(tariff.Key.ToString() + ": " + tariff.Value.ToString("0.00"));
 
                 if (++i < Count)
