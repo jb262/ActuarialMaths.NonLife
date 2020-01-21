@@ -3,7 +3,7 @@
 namespace ActuarialMaths.NonLife.TariffRating.Model
 {
     /// <summary>
-    /// The data that forms the base for the tariff rating..
+    /// The data that forms the base for the tariff rating.
     /// </summary>
     public interface ITariffData : IEnumerable<KeyValuePair<ITariffKey, TariffCell>>
     {

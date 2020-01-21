@@ -361,6 +361,31 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         }
 
         /// <summary>
+        /// Shifts the claims partially to the future by a given factor.
+        /// </summary>
+        /// <param name="shiftFactor">Factor between 0 and 1 the claims are to be partially shifted by.</param>
+        /// <returns>The triangle shifted by the given factor.</returns>
+        public ITriangle Shift(decimal shiftFactor)
+        {
+            if (shiftFactor < 0m || shiftFactor > 1m)
+            {
+                throw new ArgumentOutOfRangeException(nameof(shiftFactor), "The shift factor was out of its legal range between 0 and 1.");
+            }
+            ITriangle shifted = (ITriangle)Activator.CreateInstance(this.GetType(), Periods - 1);
+
+            for (int i = 0; i < Periods - 1; i++)
+            {
+                IEnumerable<decimal> claims = GetRow(i)
+                    .Take(Periods - i - 1)
+                    .Zip(GetRow(i + 1), (x, y) => (1m - shiftFactor) * x + shiftFactor * y);
+
+                shifted.SetRow(claims, i);
+            }
+
+            return shifted;
+        }
+
+        /// <summary>
         /// Creates a string representation of the run-off triangle.
         /// </summary>
         /// <returns>String representation of the run-off triangle.</returns>
