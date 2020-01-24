@@ -23,19 +23,16 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         {
             IDictionary<TariffAttributeValue, decimal> factors = new Dictionary<TariffAttributeValue, decimal>();
 
-            foreach (ITariffAttribute attribute in TariffData.Attributes)
+            foreach (TariffAttributeValue tariffAttributeValue in TariffData.TariffKeys.SelectMany(x => x).Distinct())
             {
-                foreach (TariffAttributeValue tariffAttributeValue in attribute)
+                TariffCell cell = TariffData[tariffAttributeValue].Aggregate(new TariffCell(0m, 0), (x, y) => x + y);
+                if (cell.PolicyCount > 0)
                 {
-                    TariffCell cell = TariffData[tariffAttributeValue].Aggregate(new TariffCell(0m, 0), (x, y) => x + y);
-                    if (cell.PolicyCount > 0)
-                    {
-                        factors[tariffAttributeValue] = (cell.ClaimsAmount / cell.PolicyCount) / TariffData.ExpectedClaimsExpenditure();
-                    }
-                    else
-                    {
-                        factors[tariffAttributeValue] = 0m;
-                    }
+                    factors[tariffAttributeValue] = (cell.ClaimsAmount / cell.PolicyCount) / TariffData.ExpectedClaimsExpenditure();
+                }
+                else
+                {
+                    factors[tariffAttributeValue] = 0m;
                 }
             }
 

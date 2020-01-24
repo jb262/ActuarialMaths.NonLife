@@ -32,7 +32,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
             {
                 if (attributeValue.Attribute != this)
                 {
-                    throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
+                    throw new InvalidAttributeValueException("The value's attribute does not match the attribute it is to be added to.");
                 }
                 Values.Add(attributeValue);
             }
@@ -91,7 +91,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         {
             if (attributeValue.Attribute != this)
             {
-                throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
+                throw new InvalidAttributeValueException("The value's attribute does not match the attribute it is to be added to.");
             }
 
             Values.Add(attributeValue);
@@ -116,7 +116,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         {
             if (attributeValue.Attribute != this)
             {
-                throw new InvalidAttributeValueException("The value's attribute does not match the atribute it is to be added to.");
+                throw new InvalidAttributeValueException("The value's attribute does not match the attribute it is to be added to.");
             }
 
             if (!Values.Contains(attributeValue))

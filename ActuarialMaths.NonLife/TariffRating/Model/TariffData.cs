@@ -37,6 +37,12 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         }
 
         /// <summary>
+        /// Constructor of the tariff data.
+        /// </summary>
+        /// <param name="attributes">Attributes the data is to be modelled with.</param>
+        public TariffData(params ITariffAttribute[] attributes) : this((IEnumerable<ITariffAttribute>)attributes) { }
+
+        /// <summary>
         /// Indexer for the tariff cell containing the information for the tariff group described by the given key.
         /// </summary>
         /// <param name="attributeValues">Collection of attribute values to describe the tariff group.</param>
