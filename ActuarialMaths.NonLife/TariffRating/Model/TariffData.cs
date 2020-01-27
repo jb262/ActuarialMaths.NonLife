@@ -19,7 +19,13 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Average expected claims expenditure over each value of each attribute.
         /// </summary>
-        private decimal? _expectedClaimsExpenditure;
+        private decimal _expectedClaimsExpenditure;
+
+        /// <summary>
+        /// Indicates whether the current version of the data is calculated or not.
+        /// Is reset to false each time changes are made, e.g. a cell is added or removed.
+        /// </summary>
+        private bool _isCalculated;
 
         /// <summary>
         /// Constructor of the tariff data.
@@ -71,6 +77,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                     throw new InvalidKeyException();
                 }
 
+                _isCalculated = false;
                 _cells[key] = value;
             }
         }
@@ -143,6 +150,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                 throw new ArgumentException("The count of policies expected/sold is zero or less.", nameof(count));
             }
 
+            _isCalculated = false;
             _cells[key] = new TariffCell(amount, count);
         }
 
@@ -160,6 +168,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                 throw new InvalidKeyException();
             }
 
+            _isCalculated = false;
             _cells[key] = new TariffCell(0m, 0);
         }
 
@@ -169,7 +178,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <returns>Average expected claims expenditure over all tariff groups in the model.</returns>
         public decimal ExpectedClaimsExpenditure()
         {
-            if (_expectedClaimsExpenditure == null)
+            if (!_isCalculated)
             {
                 decimal totalClaimsAmount = 0m;
                 decimal totalPolicyCount = 0m;
@@ -181,9 +190,10 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                 }
 
                 _expectedClaimsExpenditure = totalClaimsAmount / totalPolicyCount;
+                _isCalculated = true;
             }
 
-            return (decimal)_expectedClaimsExpenditure;
+            return _expectedClaimsExpenditure;
         }
 
         /// <summary>
