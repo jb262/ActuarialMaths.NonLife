@@ -164,7 +164,7 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
                     {
                         foreach (TariffAttributeValue attributeValue in attribute)
                         {
-                            ITariffKey tmpKey = new TariffKey(key.TariffAttributeValues.Prepend(attributeValue));
+                            ITariffKey tmpKey = new TariffKey(key.TariffAttributeValues.Append(attributeValue));
                             tmpCombinations.Add(tmpKey);
                         }
                     }

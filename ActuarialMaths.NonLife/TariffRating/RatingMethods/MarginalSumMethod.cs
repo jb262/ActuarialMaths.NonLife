@@ -14,7 +14,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         /// Arbitrarily chosen threshold to indicate whether the changes in the marginal factors is so neglectible that
         /// the iterative calculation of the marginal factors can be considered finished.
         /// </summary>
-        private const decimal _deltaThreshold = 10e-9m;
+        private const decimal _deltaThreshold = 1e-9m;
 
         /// <summary>
         /// Standard constructor of the marginal sum method.
@@ -28,7 +28,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         /// <returns>The mapping of each of the model's tariff attribute values to their marginal factors.</returns>
         protected override IDictionary<TariffAttributeValue, decimal> CalculateFactors()
         {
-            bool? thresholdReached;
+            bool thresholdReached = false;
 
             IDictionary<TariffAttributeValue, decimal> factors = new Dictionary<TariffAttributeValue, decimal>();
             IEnumerable<TariffAttributeValue> distinctAttributeValues = TariffData.TariffKeys
@@ -41,11 +41,10 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
                 factors.Add(attributeValue, 1m);
             }
 
-            do
+            while (!thresholdReached)
             {
-                factors = CalculateFactorsIteratively(distinctAttributeValues, factors, out thresholdReached);
+                thresholdReached = CalculateFactorsIteratively(distinctAttributeValues, ref factors);
             }
-            while (thresholdReached != true);
 
             return factors;
         }
@@ -55,20 +54,10 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         /// </summary>
         /// <param name="attributeValues">Attribute values the marginal factors are to be calculated for.</param>
         /// <param name="factors">Starting values for the iterative calculation of the marginal factors.</param>
-        /// <param name="thresholdReached">Indicator whether the threshold of significant change is reached or not.</param>
-        /// <param name="deltaThreshold">The threshold to indicate if the change between the initial and the new factor is significant.</param>
-        /// <returns>A dictionary with the newly calculated marginal factors.</returns>
-        private IDictionary<TariffAttributeValue, decimal> CalculateFactorsIteratively
-            (
-                IEnumerable<TariffAttributeValue> attributeValues,
-                IDictionary<TariffAttributeValue, decimal> factors,
-                out bool? thresholdReached,
-                decimal deltaThreshold = _deltaThreshold
-            )
+        /// <returns>True if the threshold indicating a significant change in factors was undercut, false otherwise.</returns>
+        private bool CalculateFactorsIteratively(IEnumerable<TariffAttributeValue> attributeValues, ref IDictionary<TariffAttributeValue, decimal> factors)
         {
-
-            IDictionary<TariffAttributeValue, decimal> factorsAfterIteration = new Dictionary<TariffAttributeValue, decimal>();
-            thresholdReached = null;
+            bool thresholdReached = true;
 
             foreach (TariffAttributeValue attributeValue in attributeValues)
             {
@@ -77,21 +66,24 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
 
                 foreach (ITariffKey key in keys)
                 {
-                    aggregate += key
-                        .Where(x => !x.Equals(attributeValue))
-                        .Select(x => factorsAfterIteration.ContainsKey(x) ? factorsAfterIteration[x] : factors[x])
-                        .Aggregate(1m, (x, y) => x * y) * TariffData[key].PolicyCount;
+                    decimal partialFactor = 1m;
+                    foreach (TariffAttributeValue differentAttributeValue in key.Where(x => !x.Equals(attributeValue)))
+                    {
+                        partialFactor *= factors[differentAttributeValue];
+                    }
+
+                    aggregate += partialFactor * TariffData[key].PolicyCount;
                 }
 
                 decimal totalClaimsAmount = TariffData[attributeValue].Select(x => x.ClaimsAmount).Sum();
                 decimal factorAfterIteration = totalClaimsAmount / (TariffData.ExpectedClaimsExpenditure() * aggregate);
 
-                thresholdReached = (thresholdReached ?? true) && (Math.Abs(factorAfterIteration - factors[attributeValue]) < deltaThreshold);
+                thresholdReached = thresholdReached && (Math.Abs(factorAfterIteration - factors[attributeValue]) < _deltaThreshold);
 
-                factorsAfterIteration.Add(attributeValue, factorAfterIteration);
+                factors[attributeValue] = factorAfterIteration;
             }
 
-            return factorsAfterIteration;
+            return thresholdReached;
         }
     }
 }
