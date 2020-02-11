@@ -39,16 +39,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         }
 
         /// <summary>
-        /// Creates a triangle with the given number of periods.
-        /// </summary>
-        /// <param name="periods">Number of periods the triangle is supposed to have.</param>
-        /// <returns>An empty triangle with the given number of periods.</returns>
-        public static ITriangle Create(int periods)
-        {
-            return (ITriangle)Activator.CreateInstance(typeof(TTriangle), periods);
-        }
-
-        /// <summary>
         /// Creates a triangle with the given claims on the diagonals.
         /// </summary>
         /// <param name="claims">Claims to be developed in the run-off-triangle.</param>

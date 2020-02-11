@@ -44,7 +44,6 @@ namespace Test.ClaimsReservingTests
             IReservingMethod additiveMethod = TestObjectBuilder.CreateAdditiveMethod();
 
             IEnumerable<decimal> cashflows = new List<decimal>() { 4379.85m, 2978.89m, 2009.11m, 997.15m, 303.4m };
-            var cf = additiveMethod.Cashflows().ToList();
 
             bool calculatedCorrectly = additiveMethod.Cashflows()
                 .Zip(cashflows, (x, y) => Math.Abs(x - Math.Round(y, 2)) <= 0.01m)
@@ -146,7 +145,7 @@ namespace Test.ClaimsReservingTests
         }
 
         [TestMethod]
-        public void CapeCod_CalculatedProjectionCorrectly()
+        public void CapeCod_CalculatesProjectionCorrectly()
         {
             ISquare projection = new Square(6);
             projection.SetRow(new List<decimal>() { 1001m, 1855m, 2423m, 2988m, 3335m, 3483m }, 0);
