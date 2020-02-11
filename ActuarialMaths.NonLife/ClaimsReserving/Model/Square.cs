@@ -286,8 +286,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             else
             {
                 row = Periods - 1;
-                column = diagonal - Periods;
-                expectedLen = 2 * Periods - diagonal;
+                column = diagonal - Periods + 1;
+                expectedLen = 2 * Periods - diagonal - 1;
             }
 
             if (n != expectedLen)

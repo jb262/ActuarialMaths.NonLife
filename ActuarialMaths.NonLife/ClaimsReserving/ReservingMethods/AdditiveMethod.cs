@@ -17,12 +17,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         private readonly IEnumerable<decimal> _premiums;
 
         /// <summary>
-        /// Constructor of an additive claims reserving model given an incremental run-off triangle.
+        /// Constructor of an additive claims reserving model given a run-off triangle.
         /// </summary>
-        /// <param name="triangle">Incremental triangle to be developed.</param>
+        /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of premia does not match the number of periods observed.</exception>
-        public AdditiveMethod(IncrementalTriangle triangle, IEnumerable<decimal> premiums) : base(triangle)
+        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) : base(TriangleBuilder<IncrementalTriangle>.CreateFrom(triangle))
         {
             int n = premiums.Count();
 
@@ -33,13 +33,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 
             _premiums = premiums;
         }
-
-        /// <summary>
-        /// Constructor of an additive claims reserving model given a cumulative run-off triangle.
-        /// </summary>
-        /// <param name="triangle">Cumulative triangle to be developed.</param>
-        /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
-        public AdditiveMethod(CumulativeTriangle triangle, IEnumerable<decimal> premiums) : this(triangle.ToIncrementalTriangle(), premiums) { }
 
         /// <summary>
         /// Provides the method's underlying development factors.

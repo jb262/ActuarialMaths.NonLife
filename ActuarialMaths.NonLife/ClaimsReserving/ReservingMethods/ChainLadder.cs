@@ -11,17 +11,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
     public class ChainLadder : FactorBasedMethod
     {
         /// <summary>
-        /// Constructor of a chain-ladder model given an incremental run-off triangle.
-        /// The given incremental triangle is converted into a cumulative triangle before it is assigned to the object's Triangle property.
-        /// </summary>
-        /// <param name="triangle">Incremental triangle to be developed.</param>
-        public ChainLadder(IncrementalTriangle triangle) : base(triangle.ToCumulativeTriangle()) { }
-
-        /// <summary>
-        /// Constructor of a chain-ladder model given an already cumulated run-off triangle.
+        /// Constructor of a chain-ladder model given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Cumulative triangle to be developed.</param>
-        public ChainLadder(CumulativeTriangle triangle) : base(triangle) { }
+        public ChainLadder(ITriangle triangle) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle)) { }
 
         /// <summary>
         /// Provides the calculated chain-ladder factors.

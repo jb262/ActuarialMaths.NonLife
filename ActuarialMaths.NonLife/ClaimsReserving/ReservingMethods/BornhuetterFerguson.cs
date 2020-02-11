@@ -16,22 +16,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         private readonly IEnumerable<decimal> _alpha;
 
         /// <summary>
-        /// Constructor of a Bornhuetter-Ferguson model given an incremental run-off triangle.
+        /// Constructor of a Bornhuetter-Ferguson model given a  run-off triangle.
         /// </summary>
-        /// <param name="triangle">Incremental triangle to be developed.</param>
-        /// <param name="factors">Factors the triangle is to be developed with.</param>
-        /// <param name="alpha">Expected final claim levels according to the model.</param>
-        public BornhuetterFerguson(IncrementalTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : this(triangle.ToCumulativeTriangle(), factors, alpha) { }
-
-        /// <summary>
-        /// Constructor of a Bornhuetter-Ferguson model given a cumulative run-off triangle.
-        /// </summary>
-        /// <param name="triangle">Cumulative triangle to be developed.</param>
+        /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <param name="alpha">Ex-ante expected final claim levels.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of expected final claim levels does not match the number of periods observed.</exception>
-        public BornhuetterFerguson(CumulativeTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(triangle)
+        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
         {
             int factorsCount = factors.Count();
 
@@ -52,7 +44,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" with according to the Bornhuetter-Ferguson method.
+        /// Develops the model's cumulative triangle into a "run-off square" according to the Bornhuetter-Ferguson method.
         /// </summary>
         /// <returns>The projected "run-off square" according to the Bornhuetter-Ferguson method.</returns>
         protected override ISquare CalculateProjection()
@@ -70,7 +62,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Zip(_alpha.Skip(i + 1).Reverse(), (x, y) => x * y)
                     .Zip(Triangle.GetDiagonal().Take(calc.Periods - i - 1), (x, y) => x + y);
 
-                calc.SetDiagonal(diagonal, calc.Periods + i + 1);
+                calc.SetDiagonal(diagonal, calc.Periods + i);
             }
 
             return calc;

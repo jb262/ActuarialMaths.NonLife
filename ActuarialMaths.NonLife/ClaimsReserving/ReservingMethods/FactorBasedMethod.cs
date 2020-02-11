@@ -39,7 +39,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Constructor given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Run-off triangle to be developed by this method.</param>
-        protected FactorBasedMethod(Triangle triangle)
+        protected FactorBasedMethod(ITriangle triangle)
         {
             Triangle = triangle;
         }

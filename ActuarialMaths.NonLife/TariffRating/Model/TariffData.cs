@@ -83,6 +83,17 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         }
 
         /// <summary>
+        /// Indexer for the tariff cell containing the information for the tariff group described by the given key.
+        /// </summary>
+        /// <param name="attributeValues">Collection of attribute values to describe the tariff group.</param>
+        /// <returns>TariffCell object that contains the claims amount and the policy count of the tariff group specified by the given key.</returns>
+        public TariffCell this[params TariffAttributeValue[] attributeValues]
+        {
+            get => this[(IEnumerable<TariffAttributeValue>)attributeValues];
+            set => this[(IEnumerable<TariffAttributeValue>)attributeValues] = value;
+        }
+
+        /// <summary>
         /// Indexer for all tariff cells linked to the fixed value of one attribute.
         /// </summary>
         /// <param name="attributeValue">Valid value for one attribute describing the model.</param>
@@ -125,13 +136,13 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Adds a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
         /// </summary>
-        /// <param name="attributeValues">Key to describe the tariff group.</param>
         /// <param name="amount">Claims amount of the tariff group.</param>
         /// <param name="count">Policy count of the tariff group.</param>
+        /// <param name="attributeValues">Key to describe the tariff group.</param>
         /// <exception cref="InvalidKeyException">Thrown when the given combination of attribute values is not a valid combination for the model's attributes.</exception>
         /// <exception cref="ArgumentException">Thrown when the expected/occurred claims amount given is smaller than zero.</exception>
         /// <exception cref="ArgumentException">Thrown when the expected/sold policies count given is less or equal zero.</exception>
-        public void Add(IEnumerable<TariffAttributeValue> attributeValues, decimal amount, int count)
+        public void Add(decimal amount, int count, IEnumerable<TariffAttributeValue> attributeValues)
         {
             ITariffKey key = attributeValues is ITariffKey ? (ITariffKey)attributeValues : new TariffKey(attributeValues);
 
@@ -155,6 +166,17 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         }
 
         /// <summary>
+        /// Adds a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
+        /// </summary>
+        /// <param name="amount">Claims amount of the tariff group.</param>
+        /// <param name="count">Policy count of the tariff group.</param>
+        /// <param name="attributeValues">Key to describe the tariff group.</param>
+        public void Add(decimal amount, int count, params TariffAttributeValue[] attributeValues)
+        {
+            Add(amount, count, (IEnumerable<TariffAttributeValue>)attributeValues);
+        }
+
+        /// <summary>
         /// Removes a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
         /// </summary>
         /// <param name="attributeValues">Key to describe the tariff group.</param>
@@ -170,6 +192,15 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
 
             _isCalculated = false;
             _cells[key] = new TariffCell(0m, 0);
+        }
+
+        /// <summary>
+        /// Removes a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
+        /// </summary>
+        /// <param name="attributeValues">Key to describe the tariff group.</param>
+        public void Remove(params TariffAttributeValue[] attributeValues)
+        {
+            Remove((IEnumerable<TariffAttributeValue>)attributeValues);
         }
 
         /// <summary>

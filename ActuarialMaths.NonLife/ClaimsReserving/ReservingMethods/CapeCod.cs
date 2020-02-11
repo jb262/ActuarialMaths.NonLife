@@ -16,22 +16,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         private readonly IEnumerable<decimal> _volumeMeasures;
 
         /// <summary>
-        /// Constructor of a Cape Cod model given an incremental run-off triangle.
+        /// Constructor of a Cape Cod model given a run-off triangle.
         /// </summary>
-        /// <param name="triangle">Incremental triangle to be developed.</param>
-        /// <param name="factors">Factors the triangle is to be developed with.</param>
-        /// <param name="volumeMeasures">Ex ante volume measures needed for the claims development.</param>
-        public CapeCod(IncrementalTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : this(triangle.ToCumulativeTriangle(), factors, volumeMeasures) { }
-
-        /// <summary>
-        /// Constructor of a Cape Cod model given a cumulative run-off triangle.
-        /// </summary>
-        /// <param name="triangle">Cumulative triangle to be developed.</param>
+        /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <param name="volumeMeasures">Volume measures needed for the claims development according to the model.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of volume measures does not match the number of periods observed.</exception>
-        public CapeCod(CumulativeTriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(triangle)
+        public CapeCod(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
         {
             int factorsCount = factors.Count();
 
@@ -52,7 +44,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" with according to the Cape Cod method.
+        /// Develops the model's cumulative triangle into a "run-off square" according to the Cape Cod method.
         /// </summary>
         /// <returns>The projected "run-off square" according to the Cape Cod method.</returns>
         protected override ISquare CalculateProjection()
@@ -81,7 +73,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Zip(newVolumeMeasures, (x, y) => x * y)
                     .Zip(calc.GetDiagonal(calc.Periods + i - 1).Take(calc.Periods - 1 - i), (x, y) => x + y);
 
-                calc.SetDiagonal(diagonal, calc.Periods + i + 1);
+                calc.SetDiagonal(diagonal, calc.Periods + i);
             }
 
             return calc;

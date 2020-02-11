@@ -10,19 +10,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
     public class LossDevelopment : FactorBasedMethod
     {
         /// <summary>
-        /// Constructor of a loss development claims reserving model given an incremental run-off triangle.
+        /// Constructor of a loss development claims reserving model given a run-off triangle.
         /// </summary>
-        /// <param name="triangle">Incremental triangle to be developed.</param>
-        /// <param name="factors">Factors the triangle is to be developed with.</param>
-        public LossDevelopment(IncrementalTriangle triangle, IEnumerable<decimal> factors) : this(triangle.ToCumulativeTriangle(), factors) { }
-
-        /// <summary>
-        /// Constructor of a loss development claims reserving model given an cumulative run-off triangle.
-        /// </summary>
-        /// <param name="triangle">Cumulative triangle to be developed.</param>
+        /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
-        public LossDevelopment(CumulativeTriangle triangle, IEnumerable<decimal> factors) : base(triangle)
+        public LossDevelopment(ITriangle triangle, IEnumerable<decimal> factors) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
         {
             int n = factors.Count();
 

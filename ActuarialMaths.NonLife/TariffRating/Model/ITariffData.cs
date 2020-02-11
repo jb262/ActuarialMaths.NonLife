@@ -30,6 +30,13 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         TariffCell this[IEnumerable<TariffAttributeValue> attributeValues] { get; set; }
 
         /// <summary>
+        /// Indexer for the tariff cell containing the information for the tariff group described by the given key.
+        /// </summary>
+        /// <param name="attributeValues">Collection of attribute values to describe the tariff group.</param>
+        /// <returns>TariffCell object that contains the claims amount and the policy count of the tariff group specified by the given key.</returns>
+        TariffCell this[params TariffAttributeValue[] attributeValues] { get; set; }
+
+        /// <summary>
         /// Indexer for all tariff cells linked to the fixed value of one attribute.
         /// </summary>
         /// <param name="attributeValue">Valid value for one attribute describing the model.</param>
@@ -39,16 +46,30 @@ namespace ActuarialMaths.NonLife.TariffRating.Model
         /// <summary>
         /// Adds a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
         /// </summary>
-        /// <param name="attributeValues">Key to describe the tariff group.</param>
         /// <param name="amount">Claims amount of the tariff group.</param>
         /// <param name="count">Policy count of the tariff group.</param>
-        void Add(IEnumerable<TariffAttributeValue> attributeValues, decimal amount, int count);
+        /// /// <param name="attributeValues">Key to describe the tariff group.</param>
+        void Add(decimal amount, int count, IEnumerable<TariffAttributeValue> attributeValues);
+
+        /// <summary>
+        /// Adds a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
+        /// </summary>
+        /// <param name="amount">Claims amount of the tariff group.</param>
+        /// <param name="count">Policy count of the tariff group.</param>
+        /// /// <param name="attributeValues">Key to describe the tariff group.</param>
+        void Add(decimal amount, int count, params TariffAttributeValue[] attributeValues);
 
         /// <summary>
         /// Removes a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
         /// </summary>
         /// <param name="attributeValues">Key to describe the tariff group.</param>
         void Remove(IEnumerable<TariffAttributeValue> attributeValues);
+
+        /// <summary>
+        /// Removes a tariff cell containing the claims amount and the policy count for a tariff group described by the given key.
+        /// </summary>
+        /// <param name="attributeValues">Key to describe the tariff group.</param>
+        void Remove(params TariffAttributeValue[] attributeValues);
 
         /// <summary>
         /// Retrieves the average expected claims expenditure over all tariff groups in the model. 
