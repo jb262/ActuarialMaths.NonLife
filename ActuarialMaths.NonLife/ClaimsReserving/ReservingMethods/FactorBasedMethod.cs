@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
 namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
@@ -18,7 +19,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Factors the run-off triangle is to be developed with.
         /// </summary>
-        protected IReadOnlyList<decimal> _factors;
+        protected Lazy<IReadOnlyList<decimal>> _factors;
 
         /// <summary>
         /// The reserves per period accoring to the model.
@@ -33,7 +34,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// The "run-off square" containing the projected claims for each accident and settlement period.
         /// </summary>
-        private ISquare _projection;
+        private Lazy<ISquare> _projection;
 
         /// <summary>
         /// Constructor given a run-off triangle.
@@ -42,29 +43,25 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         protected FactorBasedMethod(ITriangle triangle)
         {
             Triangle = triangle;
+            _projection = new Lazy<ISquare>(CalculateProjection);
         }
 
         /// <summary>
         /// Provides the method's underlying development factors.
         /// </summary>
         /// <returns>Read-only list of the method's underlying factors.</returns>
-        public virtual IReadOnlyList<decimal> Factors()
+        public IReadOnlyList<decimal> Factors
         {
-            return _factors;
+            get => _factors.Value;
         }
 
         /// <summary>
         /// Provides the method's claims projection as a "run-off square".
         /// </summary>
         /// <returns>"Run-off square" containg the projected claims.</returns>
-        public ISquare Projection()
+        public ISquare Projection
         {
-            if (_projection == null)
-            {
-                _projection = CalculateProjection();
-            }
-
-            return _projection;
+            get => _projection.Value;
         }
 
         /// <summary>
@@ -90,7 +87,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         {
             if (_reserves == null)
             {
-                _reserves = Projection().CalculateReserves().ToList().AsReadOnly();
+                _reserves = Projection.CalculateReserves().ToList().AsReadOnly();
             }
 
             return _reserves;
@@ -114,7 +111,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         {
             if (_cashflows == null)
             {
-                _cashflows = Projection().CalculateCashflows().ToList().AsReadOnly();
+                _cashflows = Projection.CalculateCashflows().ToList().AsReadOnly();
             }
 
             return _cashflows;
@@ -129,15 +126,15 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             StringBuilder sb = new StringBuilder();
 
             sb.Append("\n--------------------\n");
-            sb.Append(Projection().ToString());
+            sb.Append(Projection.ToString());
             sb.Append("\n--------------------\n");
             sb.Append("Factors:\t");
 
-            for (int i = 0; i < Factors().Count; i++)
+            for (int i = 0; i < Factors.Count; i++)
             {
-                sb.Append(Factors()[i].ToString("0.00"));
+                sb.Append(Factors[i].ToString("0.00"));
 
-                if (i < Factors().Count - 1)
+                if (i < Factors.Count - 1)
                 {
                     sb.Append("\t");
                 }

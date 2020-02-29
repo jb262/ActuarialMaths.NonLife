@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
@@ -23,7 +24,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="alpha">Ex-ante expected final claim levels.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of expected final claim levels does not match the number of periods observed.</exception>
-        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
+        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
             int factorsCount = factors.Count();
 
@@ -39,7 +40,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, alphaCount);
             }
 
-            _factors = factors.ToList().AsReadOnly();
+            _factors = new Lazy<IReadOnlyList<decimal>>(factors.ToList().AsReadOnly);
             _alpha = alpha.ToArray();
         }
 
@@ -56,9 +57,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             for (int i = 0; i < calc.Periods - 1; i++)
             {
                 IEnumerable<decimal> diagonal =
-                    Factors()
+                    Factors
                     .Skip(i + 1)
-                    .Zip(Factors().Take(Factors().Count - i - 1), (x, y) => x - y)
+                    .Zip(Factors.Take(Factors.Count - i - 1), (x, y) => x - y)
                     .Zip(_alpha.Skip(i + 1).Reverse(), (x, y) => x * y)
                     .Zip(Triangle.GetDiagonal().Take(calc.Periods - i - 1), (x, y) => x + y);
 

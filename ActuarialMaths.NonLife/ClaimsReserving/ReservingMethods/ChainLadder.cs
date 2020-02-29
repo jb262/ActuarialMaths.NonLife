@@ -14,20 +14,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Constructor of a chain-ladder model given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Cumulative triangle to be developed.</param>
-        public ChainLadder(ITriangle triangle) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle)) { }
-
-        /// <summary>
-        /// Provides the calculated chain-ladder factors.
-        /// </summary>
-        /// <returns>Read-only list of the calculated chain-ladder factors.</returns>
-        public override IReadOnlyList<decimal> Factors()
+        public ChainLadder(ITriangle triangle) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
-            if (_factors == null)
-            {
-                _factors = CalculateFactors();
-            }
-
-            return _factors;
+            _factors = new Lazy<IReadOnlyList<decimal>>(CalculateFactors);
         }
 
         /// <summary>
@@ -63,7 +52,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 IEnumerable<decimal> calculatedValues = 
                     calc.GetColumn(i)
                     .Skip(calc.Periods - 1 - i)
-                    .Select(x => x * Factors()[i]);
+                    .Select(x => x * Factors[i]);
 
                 calc.SetColumn(Triangle.GetColumn(i + 1).Concat(calculatedValues), i + 1);
             }

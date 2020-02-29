@@ -17,7 +17,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Provides the method's claims projection as a "run-off square".
         /// </summary>
         /// <returns>"Run-off square" containg the projected claims.</returns>
-        ISquare Projection();
+        ISquare Projection { get; }
 
         /// <summary>
         /// Calculates the total reserve according to the chosen model.

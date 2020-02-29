@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
@@ -23,7 +24,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="volumeMeasures">Volume measures needed for the claims development according to the model.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of volume measures does not match the number of periods observed.</exception>
-        public CapeCod(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
+        public CapeCod(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
             int factorsCount = factors.Count();
 
@@ -39,7 +40,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(triangle.Periods, vmCount);
             }
 
-            _factors = factors.ToList().AsReadOnly();
+            _factors = new Lazy<IReadOnlyList<decimal>>(factors.ToList().AsReadOnly);
             _volumeMeasures = volumeMeasures;
         }
 
@@ -49,7 +50,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The projected "run-off square" according to the Cape Cod method.</returns>
         protected override ISquare CalculateProjection()
         {
-            decimal kappa = Triangle.GetDiagonal().Sum() / _volumeMeasures.Reverse().Zip(_factors, (x, y) => x * y).Sum();
+            decimal kappa = Triangle.GetDiagonal().Sum() / _volumeMeasures.Reverse().Zip(Factors, (x, y) => x * y).Sum();
             IEnumerable<decimal> newVolumeMeasures =
                 _volumeMeasures
                 .Select(x => x * kappa)
@@ -57,9 +58,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 .ToList();
 
             IEnumerable<decimal> deltaFactors =
-                Factors()
+                Factors
                 .Skip(1)
-                .Zip(Factors().Take(Factors().Count - 1), (x, y) => x - y)
+                .Zip(Factors.Take(Factors.Count - 1), (x, y) => x - y)
                 .ToList();
 
             ISquare calc = new Square(Triangle.Periods);

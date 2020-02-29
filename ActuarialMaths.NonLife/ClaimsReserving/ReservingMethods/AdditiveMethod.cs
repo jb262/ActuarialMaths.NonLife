@@ -22,7 +22,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of premia does not match the number of periods observed.</exception>
-        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) : base(TriangleBuilder<IncrementalTriangle>.CreateFrom(triangle))
+        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) : base(TriangleConverter<IncrementalTriangle>.Convert(triangle))
         {
             int n = premiums.Count();
 
@@ -32,20 +32,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             }
 
             _premiums = premiums;
-        }
-
-        /// <summary>
-        /// Provides the method's underlying development factors.
-        /// </summary>
-        /// <returns>Read-only list of the method's underlying factors.</returns>
-        public override IReadOnlyList<decimal> Factors()
-        {
-            if (_factors == null)
-            {
-                _factors = CalculateFactors();
-            }
-
-            return _factors;
+            _factors = new Lazy<IReadOnlyList<decimal>>(CalculateFactors);
         }
 
         /// <summary>
@@ -71,7 +58,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         protected override ISquare CalculateProjection()
         {
             ISquare calc = new Square(Triangle.Periods);
-            ITriangle cumul = new CumulativeTriangle((IncrementalTriangle)Triangle);
+            ITriangle cumul = TriangleConverter<CumulativeTriangle>.Convert(Triangle);
 
             calc.SetColumn(Triangle.GetColumn(0), 0);
 
@@ -79,7 +66,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
             {
                 IEnumerable<decimal> calculatedValues = _premiums
                     .Skip(calc.Periods - i - 1)
-                    .Select(x => Factors()[i + 1] * x)
+                    .Select(x => Factors[i + 1] * x)
                     .Zip(calc.GetColumn(i).Skip(calc.Periods - i - 1), (x, y) => x + y);
 
                 calc.SetColumn(cumul.GetColumn(i + 1).Concat(calculatedValues), i + 1);

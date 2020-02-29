@@ -19,28 +19,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         public IncrementalTriangle(int periods) : base(periods) { }
 
         /// <summary>
-        /// Constructor for an icremental run-off triangle from a given cumulative triangle.
-        /// </summary>
-        /// <param name="cumul">Cumulative triangle from which the incremental triangle is to be created from.</param>
-        public IncrementalTriangle(CumulativeTriangle cumul) : base(cumul.Periods)
-        {
-            SetColumn(cumul.GetColumn(0), 0);
-            for (int i = 0; i < Periods - 1; i++)
-            {
-                SetColumn(cumul.GetColumn(i + 1).Zip(cumul.GetColumn(i), (x, y) => x - y), i + 1);
-            }
-        }
-
-        /// <summary>
-        /// Converts the incremental triangle into a cumulative triangle.
-        /// </summary>
-        /// <returns>Cumulative run-off triangle based on this incremental triangle.</returns>
-        public CumulativeTriangle ToCumulativeTriangle()
-        {
-            return new CumulativeTriangle(this);
-        }
-
-        /// <summary>
         /// Adds a sequence of claims to the run-off triangle.
         /// </summary>
         /// <param name="values">Claims to be appended to the triangle.</param>

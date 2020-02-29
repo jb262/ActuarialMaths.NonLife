@@ -31,7 +31,7 @@ namespace Test.ClaimsReservingTests
 
             IEnumerable<decimal> factors = new List<decimal>() { 0.243m, 0.222m, 0.154m, 0.142m, 0.09m, 0.037m };
 
-            bool calculatedCorrectly = additiveMethod.Factors()
+            bool calculatedCorrectly = additiveMethod.Factors
                 .Zip(factors, (x, y) => Math.Abs(x - Math.Round(y, 3)) <= 0.001m)
                 .Aggregate(true, (x, y) => x && y);
 
@@ -67,9 +67,9 @@ namespace Test.ClaimsReservingTests
 
             IReservingMethod additiveMethod = TestObjectBuilder.CreateAdditiveMethod();
 
-            for (int i = 0; i < additiveMethod.Projection().Periods; i++)
+            for (int i = 0; i < additiveMethod.Projection.Periods; i++)
             {
-                IEnumerable<decimal> row = additiveMethod.Projection().GetRow(i);
+                IEnumerable<decimal> row = additiveMethod.Projection.GetRow(i);
                 calculatedCorrectly = calculatedCorrectly
                     && row.Zip(projection.GetRow(i), (x, y) => Math.Abs(x - Math.Round(y, 2)) <= 0.01m)
                     .Aggregate(true, (x, y) => x && y);
@@ -93,9 +93,9 @@ namespace Test.ClaimsReservingTests
 
             IReservingMethod chainLadder = TestObjectBuilder.CreateChainLadderMethod();
 
-            for (int i = 0; i < chainLadder.Projection().Periods; i++)
+            for (int i = 0; i < chainLadder.Projection.Periods; i++)
             {
-                IEnumerable<decimal> row = chainLadder.Projection().GetRow(i);
+                IEnumerable<decimal> row = chainLadder.Projection.GetRow(i);
                 calculatedCorrectly = calculatedCorrectly
                     && row.Zip(projection.GetRow(i), (x, y) => Math.Abs(x - Math.Round(y, 2)) <= 0.01m)
                     .Aggregate(true, (x, y) => x && y);
@@ -111,7 +111,7 @@ namespace Test.ClaimsReservingTests
 
             FactorBasedMethod chainLadder = TestObjectBuilder.CreateChainLadderMethod();
 
-            bool calculatedCorrectly = chainLadder.Factors()
+            bool calculatedCorrectly = chainLadder.Factors
                 .Zip(factors, (x, y) => Math.Abs(x - Math.Round(y, 6)) <= 1e-6m)
                 .Aggregate(true, (x, y) => x && y);
 
@@ -133,9 +133,9 @@ namespace Test.ClaimsReservingTests
 
             IReservingMethod bornhuetterFerguson = TestObjectBuilder.CreateBornhuetterFergusonMethod();
 
-            for (int i = 0; i < bornhuetterFerguson.Projection().Periods; i++)
+            for (int i = 0; i < bornhuetterFerguson.Projection.Periods; i++)
             {
-                IEnumerable<decimal> row = bornhuetterFerguson.Projection().GetRow(i);
+                IEnumerable<decimal> row = bornhuetterFerguson.Projection.GetRow(i);
                 calculatedCorrectly = calculatedCorrectly
                     && row.Zip(projection.GetRow(i), (x, y) => Math.Abs(x - Math.Round(y, 2)) <= 0.01m)
                     .Aggregate(true, (x, y) => x && y);
@@ -159,9 +159,9 @@ namespace Test.ClaimsReservingTests
 
             IReservingMethod capeCod = TestObjectBuilder.CreateCapeCodMethod();
 
-            for (int i = 0; i< capeCod.Projection().Periods; i++)
+            for (int i = 0; i< capeCod.Projection.Periods; i++)
             {
-                IEnumerable<decimal> row = capeCod.Projection().GetRow(i);
+                IEnumerable<decimal> row = capeCod.Projection.GetRow(i);
                 calculatedCorrectly = calculatedCorrectly
                     && row.Zip(projection.GetRow(i), (x, y) => Math.Abs(x - Math.Round(y, 2)) <= 0.01m)
                     .Aggregate(true, (x, y) => x && y);

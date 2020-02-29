@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ActuarialMaths.NonLife.ClaimsReserving.Model;
 
@@ -15,7 +16,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
-        public LossDevelopment(ITriangle triangle, IEnumerable<decimal> factors) : base(TriangleBuilder<CumulativeTriangle>.CreateFrom(triangle))
+        public LossDevelopment(ITriangle triangle, IEnumerable<decimal> factors) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
             int n = factors.Count();
 
@@ -24,7 +25,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, n);
             }
 
-            _factors = factors.ToList().AsReadOnly();
+            _factors = new Lazy<IReadOnlyList<decimal>>(factors.ToList().AsReadOnly);
         }
 
         /// <summary>
@@ -34,14 +35,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         protected override ISquare CalculateProjection()
         {
             ISquare calc = new Square(Triangle.Periods);
-            IEnumerable<decimal> regressingLevels = Triangle.GetDiagonal().Zip(Factors(), (x, y) => x / y).Reverse();
+            IEnumerable<decimal> regressingLevels = Triangle.GetDiagonal()
+                .Zip(Factors, (x, y) => x / y)
+                .Reverse()
+                .ToList(); ;
             
             calc.SetColumn(Triangle.GetColumn(0), 0);
             for (int i = 0; i < calc.Periods - 1; i++)
             {
                 IEnumerable<decimal> calculated = regressingLevels
                     .Skip(i + 1)
-                    .Select(x => x * Factors()[Factors().Count - i - 1]);
+                    .Select(x => x * Factors[Factors.Count - i - 1]);
 
                 calc.SetColumn(Triangle.GetColumn(calc.Periods - i - 1).Concat(calculated), calc.Periods - i - 1);
             }

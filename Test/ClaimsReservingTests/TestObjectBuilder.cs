@@ -4,7 +4,7 @@ using ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods;
 
 namespace Test.ClaimsReservingTests
 {
-    public static class TestObjectBuilder
+    internal static class TestObjectBuilder
     {
         internal static ITriangle CreateIncrementalTriangle()
         {
@@ -18,11 +18,6 @@ namespace Test.ClaimsReservingTests
             triangle.AddClaims(new List<decimal>() { 1889m, 1536m, 1007m, 744m, 422m, 148m });
 
             return triangle;
-        }
-
-        internal static ITriangle CreateCumulativeTriangle()
-        {
-            return TriangleBuilder<CumulativeTriangle>.CreateFrom(CreateIncrementalTriangle());
         }
 
         internal static IEnumerable<decimal> CreateFactors()
