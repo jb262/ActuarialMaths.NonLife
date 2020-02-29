@@ -16,13 +16,16 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         private readonly IEnumerable<decimal> _premiums;
 
+        private readonly ITriangle _cumulativeTriangle;
+
         /// <summary>
         /// Constructor of an additive claims reserving model given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of premia does not match the number of periods observed.</exception>
-        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) : base(TriangleConverter<IncrementalTriangle>.Convert(triangle))
+        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) 
+            : base(new ReadOnlyTriangle(TriangleConverter<IncrementalTriangle>.Convert(triangle)))
         {
             int n = premiums.Count();
 
@@ -33,6 +36,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 
             _premiums = premiums;
             _factors = new Lazy<IReadOnlyList<decimal>>(CalculateFactors);
+            _cumulativeTriangle = triangle is CumulativeTriangle ? triangle : TriangleConverter<CumulativeTriangle>.Convert(triangle);
+
         }
 
         /// <summary>
@@ -52,14 +57,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" with the calculated factors of the additive method.
+        /// Develops the model's cumulative triangle into a run-off square with the calculated factors of the additive method.
         /// </summary>
-        /// <returns>The projected "run-off square" according to the additive method.</returns>
-        protected override ISquare CalculateProjection()
+        /// <returns>The projected run-off square according to the additive method.</returns>
+        protected override IReadOnlySquare CalculateProjection()
         {
-            ISquare calc = new Square(Triangle.Periods);
-            ITriangle cumul = TriangleConverter<CumulativeTriangle>.Convert(Triangle);
-
+            Square calc = new Square(Triangle.Periods);
             calc.SetColumn(Triangle.GetColumn(0), 0);
 
             for (int i = 0; i < calc.Periods - 1; i++)
@@ -69,10 +72,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                     .Select(x => Factors[i + 1] * x)
                     .Zip(calc.GetColumn(i).Skip(calc.Periods - i - 1), (x, y) => x + y);
 
-                calc.SetColumn(cumul.GetColumn(i + 1).Concat(calculatedValues), i + 1);
+                calc.SetColumn(_cumulativeTriangle.GetColumn(i + 1).Concat(calculatedValues), i + 1);
             }
 
-            return calc;
+            return calc.AsReadOnly();
         }
 
         /// <summary>

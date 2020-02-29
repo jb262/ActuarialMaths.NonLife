@@ -11,13 +11,13 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Run-off triangle the method uses to project claims.
         /// </summary>
-        ITriangle Triangle { get; }
+        IReadOnlyTriangle Triangle { get; }
 
         /// <summary>
-        /// Provides the method's claims projection as a "run-off square".
+        /// Provides the method's claims projection as a run-off square.
         /// </summary>
-        /// <returns>"Run-off square" containg the projected claims.</returns>
-        ISquare Projection { get; }
+        /// <returns>Run-off square containg the projected claims.</returns>
+        IReadOnlySquare Projection { get; }
 
         /// <summary>
         /// Calculates the total reserve according to the chosen model.

@@ -24,7 +24,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="alpha">Ex-ante expected final claim levels.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of expected final claim levels does not match the number of periods observed.</exception>
-        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
+        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha)
+            : base(new ReadOnlyTriangle(TriangleConverter<CumulativeTriangle>.Convert(triangle)))
         {
             int factorsCount = factors.Count();
 
@@ -45,12 +46,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" according to the Bornhuetter-Ferguson method.
+        /// Develops the model's cumulative triangle into a run-off square according to the Bornhuetter-Ferguson method.
         /// </summary>
-        /// <returns>The projected "run-off square" according to the Bornhuetter-Ferguson method.</returns>
-        protected override ISquare CalculateProjection()
+        /// <returns>The projected run-off square according to the Bornhuetter-Ferguson method.</returns>
+        protected override IReadOnlySquare CalculateProjection()
         {
-            ISquare calc = new Square(Triangle.Periods);
+            Square calc = new Square(Triangle.Periods);
 
             calc.InitFromTriangle(Triangle);
 
@@ -66,7 +67,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 calc.SetDiagonal(diagonal, calc.Periods + i);
             }
 
-            return calc;
+            return calc.AsReadOnly();
         }
 
         /// <summary>

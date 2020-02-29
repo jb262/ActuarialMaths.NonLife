@@ -16,7 +16,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         /// <param name="square">Square whose cashflows are to be calculated.
         /// <returns>The calculated cashflows for each period according to the chosen model.</returns>
-        internal static IEnumerable<decimal> CalculateCashflows(this ISquare square)
+        internal static IEnumerable<decimal> CalculateCashflows(this IReadOnlySquare square)
         {
             for (int i = 0; i < square.Periods - 1; i++)
             {
@@ -34,7 +34,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         /// <param name="square">Square whose reserves are to be calculated.</param>
         /// <returns>The calculated reserves for each period according to the chosen model.</returns>
-        internal static IEnumerable<decimal> CalculateReserves(this ISquare square)
+        internal static IEnumerable<decimal> CalculateReserves(this IReadOnlySquare square)
         {
             return square.GetColumn(square.Periods - 1)
                 .Zip(square.GetDiagonal().Reverse(), (x, y) => x - y);

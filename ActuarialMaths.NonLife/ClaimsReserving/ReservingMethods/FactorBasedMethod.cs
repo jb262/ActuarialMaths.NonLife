@@ -14,7 +14,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <summary>
         /// Run-off triangle the method uses to project claims.
         /// </summary>
-        public ITriangle Triangle { get; }
+        public IReadOnlyTriangle Triangle { get; }
 
         /// <summary>
         /// Factors the run-off triangle is to be developed with.
@@ -32,18 +32,18 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         private IReadOnlyList<decimal> _cashflows;
 
         /// <summary>
-        /// The "run-off square" containing the projected claims for each accident and settlement period.
+        /// The run-off square containing the projected claims for each accident and settlement period.
         /// </summary>
-        private Lazy<ISquare> _projection;
+        private Lazy<IReadOnlySquare> _projection;
 
         /// <summary>
         /// Constructor given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Run-off triangle to be developed by this method.</param>
-        protected FactorBasedMethod(ITriangle triangle)
+        protected FactorBasedMethod(IReadOnlyTriangle triangle)
         {
             Triangle = triangle;
-            _projection = new Lazy<ISquare>(CalculateProjection);
+            _projection = new Lazy<IReadOnlySquare>(CalculateProjection);
         }
 
         /// <summary>
@@ -56,19 +56,19 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Provides the method's claims projection as a "run-off square".
+        /// Provides the method's claims projection as a run-off square.
         /// </summary>
-        /// <returns>"Run-off square" containg the projected claims.</returns>
-        public ISquare Projection
+        /// <returns>Run-off square containg the projected claims.</returns>
+        public IReadOnlySquare Projection
         {
             get => _projection.Value;
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" with the method's underlying factors.
+        /// Develops the model's cumulative triangle into a run-off square with the method's underlying factors.
         /// </summary>
-        /// <returns>The projected "run-off square" according to the chosen method.</returns>
-        protected abstract ISquare CalculateProjection();
+        /// <returns>The projected run-off square according to the chosen method.</returns>
+        protected abstract IReadOnlySquare CalculateProjection();
 
         /// <summary>
         /// Calculates the total reserve according to the chosen model.

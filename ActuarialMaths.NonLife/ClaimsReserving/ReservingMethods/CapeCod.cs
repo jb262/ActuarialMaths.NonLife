@@ -24,7 +24,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="volumeMeasures">Volume measures needed for the claims development according to the model.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of volume measures does not match the number of periods observed.</exception>
-        public CapeCod(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
+        public CapeCod(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> volumeMeasures)
+            : base(new ReadOnlyTriangle(TriangleConverter<CumulativeTriangle>.Convert(triangle)))
         {
             int factorsCount = factors.Count();
 
@@ -45,10 +46,10 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" according to the Cape Cod method.
+        /// Develops the model's cumulative triangle into a run-off square according to the Cape Cod method.
         /// </summary>
-        /// <returns>The projected "run-off square" according to the Cape Cod method.</returns>
-        protected override ISquare CalculateProjection()
+        /// <returns>The projected run-off square according to the Cape Cod method.</returns>
+        protected override IReadOnlySquare CalculateProjection()
         {
             decimal kappa = Triangle.GetDiagonal().Sum() / _volumeMeasures.Reverse().Zip(Factors, (x, y) => x * y).Sum();
             IEnumerable<decimal> newVolumeMeasures =
@@ -63,7 +64,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 .Zip(Factors.Take(Factors.Count - 1), (x, y) => x - y)
                 .ToList();
 
-            ISquare calc = new Square(Triangle.Periods);
+            Square calc = new Square(Triangle.Periods);
             calc.InitFromTriangle(Triangle);
 
             for (int i = 0; i < calc.Periods - 1; i++)
@@ -77,7 +78,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 calc.SetDiagonal(diagonal, calc.Periods + i);
             }
 
-            return calc;
+            return calc.AsReadOnly();
         }
 
         /// <summary>

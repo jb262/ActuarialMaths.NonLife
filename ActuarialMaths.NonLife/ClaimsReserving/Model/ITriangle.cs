@@ -3,15 +3,10 @@
 namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 {
     /// <summary>
-    /// Interface for a run-off triangle.
+    /// Interface for an editable run-off triangle.
     /// </summary>
-    public interface ITriangle : ISliceable<decimal>
+    public interface ITriangle : IWriteableSliceable<decimal>, IReadOnlyTriangle
     {
-        /// <summary>
-        /// Number of periods under observation.
-        /// </summary>
-        int Periods { get; }
-
         /// <summary>
         /// Adds a sequence of claims to the run-off triangle.
         /// </summary>

@@ -16,7 +16,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="factors">Factors the triangle is to be developed with.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the number of factors does not match the number of periods observed.</exception>
-        public LossDevelopment(ITriangle triangle, IEnumerable<decimal> factors) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
+        public LossDevelopment(ITriangle triangle, IEnumerable<decimal> factors)
+            : base(new ReadOnlyTriangle(TriangleConverter<CumulativeTriangle>.Convert(triangle)))
         {
             int n = factors.Count();
 
@@ -29,12 +30,12 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         }
 
         /// <summary>
-        /// Develops the model's cumulative triangle into a "run-off square" with the calculated factors of the loss development method.
+        /// Develops the model's cumulative triangle into a run-off square with the calculated factors of the loss development method.
         /// </summary>
-        /// <returns>The projected "run-off square" according to the loss development method.</returns>
-        protected override ISquare CalculateProjection()
+        /// <returns>The projected run-off square according to the loss development method.</returns>
+        protected override IReadOnlySquare CalculateProjection()
         {
-            ISquare calc = new Square(Triangle.Periods);
+            Square calc = new Square(Triangle.Periods);
             IEnumerable<decimal> regressingLevels = Triangle.GetDiagonal()
                 .Zip(Factors, (x, y) => x / y)
                 .Reverse()
@@ -50,7 +51,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 calc.SetColumn(Triangle.GetColumn(calc.Periods - i - 1).Concat(calculated), calc.Periods - i - 1);
             }
 
-            return calc;
+            return calc.AsReadOnly();
         }
 
         /// <summary>
