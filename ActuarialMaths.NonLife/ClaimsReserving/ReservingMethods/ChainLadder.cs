@@ -15,7 +15,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// </summary>
         /// <param name="triangle">Cumulative triangle to be developed.</param>
         public ChainLadder(ITriangle triangle)
-            : base(new ReadOnlyTriangle(TriangleConverter<CumulativeTriangle>.Convert(triangle)))
+            : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
             _factors = new Lazy<IReadOnlyList<decimal>>(CalculateFactors);
         }
@@ -45,7 +45,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The projected run-off square according to the chain-ladder method.</returns>
         protected override IReadOnlySquare CalculateProjection()
         {
-            Square calc = new Square(Triangle.Periods);
+            ISquare calc = new Square(Triangle.Periods);
             calc.SetColumn(Triangle.GetColumn(0), 0);
 
             for (int i = 0; i < calc.Periods - 1; i++)

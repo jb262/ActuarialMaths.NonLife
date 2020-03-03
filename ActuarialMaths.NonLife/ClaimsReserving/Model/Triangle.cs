@@ -254,5 +254,14 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 
             return shifted;
         }
+
+        /// <summary>
+        /// Creates a read only copy of the original run off triangle.
+        /// </summary>
+        /// <returns>A read only copy of the run off triangle.</returns>
+        public IReadOnlyTriangle AsReadOnly()
+        {
+            return new ReadOnlyTriangle(this);
+        }
     }
 }

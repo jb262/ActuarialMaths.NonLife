@@ -19,5 +19,11 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <param name="shiftFactor">Factor betwen 0 and 1 the claims are to be partially shifted by.</param>
         /// <returns>The triangle shifted by the given factor.</returns>
         ITriangle Shift(decimal shiftFactor);
+
+        /// <summary>
+        /// Creates a read only copy of the original run off triangle.
+        /// </summary>
+        /// <returns>A read only copy of the run off triangle.</returns>
+        IReadOnlyTriangle AsReadOnly();
     }
 }

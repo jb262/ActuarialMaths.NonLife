@@ -3,7 +3,7 @@
     /// <summary>
     /// Basic implementation of a run-off square that allows read-only operations only.
     /// </summary>
-    public class ReadOnlySquare : SquareBase, IReadOnlySquare
+    public class ReadOnlySquare : SquareBase
     {
         /// <summary>
         /// Creates an immutable run-off square from a mutable one.

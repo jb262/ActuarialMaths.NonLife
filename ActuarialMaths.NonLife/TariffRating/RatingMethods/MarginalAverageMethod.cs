@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using ActuarialMaths.NonLife.TariffRating.Model;
 
@@ -19,7 +20,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         /// Calculates the marginal factors according to the marginal average tariff rating method.
         /// </summary>
         /// <returns>The mapping of each of the model's tariff attribute values to their marginal factors.</returns>
-        protected override IDictionary<TariffAttributeValue, decimal> CalculateFactors()
+        protected override IReadOnlyDictionary<TariffAttributeValue, decimal> CalculateFactors()
         {
             IDictionary<TariffAttributeValue, decimal> factors = new Dictionary<TariffAttributeValue, decimal>();
 
@@ -36,7 +37,7 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
                 }
             }
 
-            return factors;
+            return new ReadOnlyDictionary<TariffAttributeValue, decimal>(factors);
         }
     }
 }

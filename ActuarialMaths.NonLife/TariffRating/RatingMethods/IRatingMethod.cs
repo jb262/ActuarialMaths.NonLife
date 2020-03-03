@@ -23,7 +23,6 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
         /// <summary>
         /// The mapping of each tariff group to their resepctive base tariff.
         /// </summary>
-        /// <returns>A read only dictionary which maps tariff groups to their base tariff according to the chosen method.</returns>
-        IReadOnlyDictionary<ITariffKey, decimal> Tariffs();
+        IReadOnlyDictionary<ITariffKey, decimal> Tariffs { get; }
     }
 }

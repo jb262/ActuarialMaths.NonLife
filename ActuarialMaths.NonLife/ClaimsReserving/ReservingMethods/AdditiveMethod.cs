@@ -24,8 +24,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="triangle">Triangle to be developed.</param>
         /// <param name="premiums">Premiums earned ordered by accident year in ascending order.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of premia does not match the number of periods observed.</exception>
-        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) 
-            : base(new ReadOnlyTriangle(TriangleConverter<IncrementalTriangle>.Convert(triangle)))
+        public AdditiveMethod(ITriangle triangle, IEnumerable<decimal> premiums) : base(TriangleConverter<IncrementalTriangle>.Convert(triangle))
         {
             int n = premiums.Count();
 
@@ -36,7 +35,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
 
             _premiums = premiums;
             _factors = new Lazy<IReadOnlyList<decimal>>(CalculateFactors);
-            _cumulativeTriangle = triangle is CumulativeTriangle ? triangle : TriangleConverter<CumulativeTriangle>.Convert(triangle);
+            _cumulativeTriangle = TriangleConverter<CumulativeTriangle>.Convert(triangle);
 
         }
 
@@ -62,7 +61,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The projected run-off square according to the additive method.</returns>
         protected override IReadOnlySquare CalculateProjection()
         {
-            Square calc = new Square(Triangle.Periods);
+            ISquare calc = new Square(Triangle.Periods);
             calc.SetColumn(Triangle.GetColumn(0), 0);
 
             for (int i = 0; i < calc.Periods - 1; i++)

@@ -24,8 +24,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <param name="alpha">Ex-ante expected final claim levels.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the count of factors does not match the number of periods observed.</exception>
         /// <exception cref="DimensionMismatchException">Thrown when the number of expected final claim levels does not match the number of periods observed.</exception>
-        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha)
-            : base(new ReadOnlyTriangle(TriangleConverter<CumulativeTriangle>.Convert(triangle)))
+        public BornhuetterFerguson(ITriangle triangle, IEnumerable<decimal> factors, IEnumerable<decimal> alpha) : base(TriangleConverter<CumulativeTriangle>.Convert(triangle))
         {
             int factorsCount = factors.Count();
 
@@ -51,7 +50,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// <returns>The projected run-off square according to the Bornhuetter-Ferguson method.</returns>
         protected override IReadOnlySquare CalculateProjection()
         {
-            Square calc = new Square(Triangle.Periods);
+            ISquare calc = new Square(Triangle.Periods);
 
             calc.InitFromTriangle(Triangle);
 

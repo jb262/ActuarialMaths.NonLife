@@ -22,7 +22,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         protected Lazy<IReadOnlyList<decimal>> _factors;
 
         /// <summary>
-        /// The reserves per period accoring to the model.
+        /// The reserves per period according to the model.
         /// </summary>
         private IReadOnlyList<decimal> _reserves;
 
@@ -40,9 +40,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
         /// Constructor given a run-off triangle.
         /// </summary>
         /// <param name="triangle">Run-off triangle to be developed by this method.</param>
-        protected FactorBasedMethod(IReadOnlyTriangle triangle)
+        protected FactorBasedMethod(ITriangle triangle)
         {
-            Triangle = triangle;
+            Triangle = triangle.AsReadOnly();
             _projection = new Lazy<IReadOnlySquare>(CalculateProjection);
         }
 

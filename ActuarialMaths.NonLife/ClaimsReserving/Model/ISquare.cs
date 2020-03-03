@@ -10,5 +10,11 @@
         /// </summary>
         /// <param name="triangle">Triangle the square is to be initialized from.</param>
         void InitFromTriangle(IReadOnlyTriangle triangle);
+
+        /// <summary>
+        /// Creates a read only copy of the run off square.
+        /// </summary>
+        /// <returns>A read only copy of the original run off square.</returns>
+        IReadOnlySquare AsReadOnly();
     }
 }
