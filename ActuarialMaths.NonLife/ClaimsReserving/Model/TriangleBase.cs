@@ -134,7 +134,6 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
             }
         }
 
-
         /// <summary>
         /// Creates a deep copy of the triangle.
         /// </summary>

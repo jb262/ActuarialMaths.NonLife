@@ -26,10 +26,17 @@ namespace ActuarialMaths.NonLife.TariffRating.RatingMethods
 
             foreach (TariffAttributeValue tariffAttributeValue in TariffData.TariffKeys.SelectMany(x => x).Distinct())
             {
-                TariffCell cell = TariffData[tariffAttributeValue].Aggregate(new TariffCell(0m, 0), (x, y) => x + y);
-                if (cell.PolicyCount > 0)
+                decimal totalAmount = 0m;
+                int totalCount = 0;
+
+                foreach (TariffCell cell in TariffData[tariffAttributeValue])
                 {
-                    factors[tariffAttributeValue] = (cell.ClaimsAmount / cell.PolicyCount) / TariffData.ExpectedClaimsExpenditure();
+                    totalAmount += cell.ClaimsAmount;
+                    totalCount += cell.PolicyCount;
+                }
+                if (totalCount > 0)
+                {
+                    factors[tariffAttributeValue] = (totalAmount / totalCount) / TariffData.ExpectedClaimsExpenditure();
                 }
                 else
                 {

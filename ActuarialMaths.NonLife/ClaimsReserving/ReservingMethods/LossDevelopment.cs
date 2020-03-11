@@ -25,7 +25,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(Triangle.Periods, n);
             }
 
-            _factors = new Lazy<IReadOnlyList<decimal>>(factors.ToList().AsReadOnly);
+            _factors = new Lazy<IReadOnlyList<decimal>>(() => factors.ToList().AsReadOnly());
         }
 
         /// <summary>

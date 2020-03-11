@@ -25,33 +25,5 @@
             ClaimsAmount = amount;
             PolicyCount = count;
         }
-
-        /// <summary>
-        /// Overloaded operator for adding two tariff cells.
-        /// </summary>
-        /// <param name="cell">First summand.</param>
-        /// <param name="otherCell">Second summand.</param>
-        /// <returns>Sum of two tariff cells, i.e. the sums of the claims amounts and policy counts.</returns>
-        public static TariffCell operator + (TariffCell cell, TariffCell otherCell)
-        {
-            decimal amount = cell.ClaimsAmount + otherCell.ClaimsAmount;
-            int count = cell.PolicyCount + otherCell.PolicyCount;
-
-            return new TariffCell(amount, count);
-        }
-
-        /// <summary>
-        /// Overloaded operator for substracting two tariff cells.
-        /// </summary>
-        /// <param name="cell">Minuend.</param>
-        /// <param name="otherCell">Subtrahend.</param>
-        /// <returns>The difference between two tariff cells, i.e. the differences bewteen their claims amounts and policy counts.</returns>
-        public static TariffCell operator - (TariffCell cell, TariffCell otherCell)
-        {
-            decimal amount = cell.ClaimsAmount - otherCell.ClaimsAmount;
-            int count = cell.PolicyCount - otherCell.PolicyCount;
-
-            return new TariffCell(amount, count);
-        }
     }
 }

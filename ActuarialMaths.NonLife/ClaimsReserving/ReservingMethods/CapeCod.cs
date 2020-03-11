@@ -40,7 +40,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
                 throw new DimensionMismatchException(triangle.Periods, vmCount);
             }
 
-            _factors = new Lazy<IReadOnlyList<decimal>>(factors.ToList().AsReadOnly);
+            _factors = new Lazy<IReadOnlyList<decimal>>(() => factors.ToList().AsReadOnly());
             _volumeMeasures = volumeMeasures;
         }
 
