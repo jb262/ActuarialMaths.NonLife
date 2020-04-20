@@ -11,7 +11,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.ReservingMethods
     /// </summary>
     internal static class Calculations
     {
-        // <summary>
+        /// <summary>
         /// Calculates the cashflows for each period according to the chosen model.
         /// </summary>
         /// <param name="square">Square whose cashflows are to be calculated.

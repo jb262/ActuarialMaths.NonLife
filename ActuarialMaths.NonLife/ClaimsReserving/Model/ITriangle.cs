@@ -25,5 +25,11 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// </summary>
         /// <returns>A read only copy of the run off triangle.</returns>
         IReadOnlyTriangle AsReadOnly();
+
+        /// <summary>
+        /// Extrapolates the main diagonal by multiplaying its values with a given factor.
+        /// </summary>
+        /// <param name="factor">The factor the main diagonal is to be multiplied with.</param>
+        void ExtrapolateDiagonal(decimal factor);
     }
 }

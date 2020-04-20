@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ActuarialMaths.NonLife.ClaimsReserving.Model
 {
@@ -32,25 +33,8 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// </remarks>
         public override void AddClaims(IEnumerable<decimal> values)
         {
-            base.AddClaims(values);
-
-            int row = Periods - 1;
-            int column = 0;
-
-            foreach (decimal val in values)
-            {
-                if (column == 0)
-                {
-                    _claims[row][column] = val;
-                }
-                else
-                {
-                    _claims[row][column] = _claims[row][column - 1] + val;
-                }
-
-                row--;
-                column++;
-            }
+            IEnumerable<decimal> cumulated = (Periods == 0) ? values : values.Zip(GetDiagonal().Prepend(0m), (x, y) => x + y);
+            base.AddClaims(cumulated);
         }
     }
 }

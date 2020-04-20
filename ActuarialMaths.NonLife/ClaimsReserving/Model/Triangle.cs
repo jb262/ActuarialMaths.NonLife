@@ -203,21 +203,17 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <param name="values">Claims to be appended to the triangle.</param>
         /// <exception cref="DimensionMismatchException">Thrown when the element count of the new claims does not match the expected number of new claims.</exception>
         /// <remarks>
-        /// While this method is virtual and could technically not be overriden in a derived class, it does not provide the functionality to actually append new claims
-        /// to the run-off triangle, but rather only takes care of the validation, eventually neccessary resizing of the claims array and increment of the periods count.
+        /// It is assumed that the claims to be added are amounts paid in the corresponding period,
+        /// i.e. the claims are appended to the triangle as they are passed to the method.
+        /// It is assumed that claims to be added are all claims paid in a fixed year. They are ordered
+        /// by the relative settlement period in ascending order, e.g.: There are three claims to be added for the year 2019. They are ordered as follows:
+        /// 1. Claim occured in 2019 and was paid in 2019 (relative settlement year = 0)
+        /// 2. Claim occured in 2018 and was paid in 2019 (relative settlement year = 1)
+        /// 3. Claim occured in 2017 and was paid in 2019 (relative settlement year = 2)
         /// </remarks>
         public virtual void AddClaims(IEnumerable<decimal> values)
         {
-            Periods++;
-
-            int n = values.Count();
-
-            if (n != Periods)
-            {
-                throw new DimensionMismatchException(Periods, n);
-            }
-
-            if (_capacity < n)
+            if (_capacity < values.Count())
             {
                 _capacity *= 2;
 
@@ -228,6 +224,9 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
                     Array.Resize(ref _claims[i], _capacity - i);
                 }
             }
+
+            Periods++;
+            SetDiagonal(values);
         }
 
         /// <summary>
@@ -262,6 +261,15 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         public IReadOnlyTriangle AsReadOnly()
         {
             return new ReadOnlyTriangle(this);
+        }
+
+        /// <summary>
+        /// Extrapolates the main diagonal by multiplaying its values with a given factor.
+        /// </summary>
+        /// <param name="factor">The factor the main diagonal is to be multiplied with.</param>
+        public void ExtrapolateDiagonal(decimal factor)
+        {
+            SetDiagonal(GetDiagonal().Select(x => factor * x));
         }
     }
 }
