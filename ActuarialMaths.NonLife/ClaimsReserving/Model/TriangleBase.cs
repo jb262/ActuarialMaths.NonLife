@@ -140,7 +140,7 @@ namespace ActuarialMaths.NonLife.ClaimsReserving.Model
         /// <returns>Deep copy of the triangle.</returns>
         public object Clone()
         {
-            Triangle cloned = (Triangle)Activator.CreateInstance(GetType(), Periods);
+            TriangleBase cloned = (TriangleBase)Activator.CreateInstance(GetType(), Periods);
             for (int i = 0; i < Periods; i++)
             {
                 for (int j = 0; j < Periods - i; j++)
